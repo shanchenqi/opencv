@@ -50,7 +50,36 @@ enum QuatAssumeType
      */
     QUAT_ASSUME_UNIT
 };
+enum EulerAnglesOrder
+{
+    INT_XYZ,
+    INT_XZY,
+    INT_YXZ,
+    INT_YZX,
+    INT_ZXY,
+    INT_ZYX,
 
+    INT_YXY,
+    INT_ZXZ,
+    INT_XYX,
+    INT_ZYZ,
+    INT_YZY,
+    INT_XZX,
+
+    EXT_XYZ,
+    EXT_XZY,
+    EXT_YXZ,
+    EXT_YZX,
+    EXT_ZXY,
+    EXT_ZYX,
+
+    EXT_YXY,
+    EXT_ZXZ,
+    EXT_XYX,
+    EXT_ZYZ,
+    EXT_XZX,
+    EXT_YZY
+};
 template <typename _Tp> class Quat;
 template <typename _Tp> std::ostream& operator<<(std::ostream&, const Quat<_Tp>&);
 
@@ -1503,6 +1532,20 @@ Quat<T> operator*(const Quat<T>&, const T);
 
 template <typename S>
 std::ostream& operator<<(std::ostream&, const Quat<S>&);
+
+template <typename T>
+Quat<T> getHeading(T m);
+
+template <typename T>
+Quat<T> getPitch(T m);
+
+template <typename T>
+Quat<T> getBank(T m);
+
+template <typename T>
+Quat<T> EularToAngles(const Vec<T, 3> &rad,EulerAnglesOrder order);
+template <typename T>
+Vec<T, 3> AnglesToEular(const Quat<T> &quat, EulerAnglesOrder order);
 
 using Quatd = Quat<double>;
 using Quatf = Quat<float>;
