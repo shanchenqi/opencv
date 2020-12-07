@@ -50,6 +50,34 @@ enum QuatAssumeType
      */
     QUAT_ASSUME_UNIT
 };
+/** @brief Enum of the possible Euler Angles order.
+
+ * Without considering the possibility of using two different conventions for the definition of the rotation axes ,
+ * there exists twelve possible sequences of rotation axes, divided in two groups:
+ * - Proper Euler angles (*z*-*x*-*z*, *x*-*y*-*x*, *y*-*z*-*y*, *z*-*y*-*z*, *x*-*z*-*x*, *y*-*x*-*y*)
+ * - Tait–Bryan angles (*x*-*y*-*z*, *y*-*z*-*x*, *z*-*x*-*y*, *x*-*z*-*y*, *z*-*y*-*x*, *y*-*x*-*z*).
+ * The three elemental rotations may be [extrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_extrinsic_rotations)
+ * (rotations about the axes *xyz* of the original coordinate system, which is assumed to remain motionless),
+ * or [intrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_intrinsic_rotations)(rotations about the axes of the rotating coordinate system *XYZ*, solidary with the moving body, which changes its orientation after each elemental rotation).
+ *
+ * Extrinsic and intrinsic rotations are relevant.For a rotation, \f$\theta_1 \f$ is rotation about the X-axis, \f$\theta_2 \f$ is rotation about the Y-axis,
+ * \f$\theta_3 \f$ is rotation about the Z-axis. If using intrinsic rotations, the rotation matrix \f$R =X(\theta_1) Y(\theta_2) Z(\theta_3) \f$,
+ * if using extrinsic rotations, the rotation matrix \f$R =Z({\theta_3}) Y({\theta_2}) X({\theta_1})\f$,
+ * which,
+ * \f$X_\theta_1={\begin{bmatrix}1&0&0\\0&\cos \theta_1 &-\sin \theta_1 \\0&\sin \theta_1 &\cos \theta_1 \\\end{bmatrix}}\f$,
+ * \f$Y_\theta_2={\begin{bmatrix}1&0&0\\0&\cos \theta_2 &-\sin \theta_2 \\0&\sin \theta_2 &\cos \theta_2 \\\end{bmatrix}}\f$,
+ * \f$Z_\theta_3=\begin{bmatrix}\cos\theta_3 &-\sin \theta_3&0\\\sin \theta_3 &\cos \theta_3 &0\\0&0&1\\\end{bmatrix}}\f $,
+ *
+ * The Euler Angles was built according to this set of conventions:
+ * - [Right handed](https://en.wikipedia.org/wiki/Right_hand_rule) reference frames are adopted, and the [right hand rule](https://en.wikipedia.org/wiki/Right_hand_rule) is used to determine the sign of the angles \f $\theta_1\f$, \f$\theta_2\f$,\f$\theta_3\f$.
+ * - Each matrix is meant to represent an [active rotation](https://en.wikipedia.org/wiki/Active_and_passive_transformation) (the composing and composed matrices
+ * are supposed to act on the coordinates of vectors defined in the initial fixed reference frame and give as a result the coordinates of a rotated vector defined in the same reference frame).
+ * - for \f$\theta_1\f$ and \f$\theta_3\f$, the valid range could be (−π, π].
+ * for \f$\theta_2\f$, if using Tait–Bryan angles, the valid range could be[−π/2, π/2]. When transform a quaternion to euler angles. The solution of euler angles is unique when \f$ \theta_2 \f$ is in (-−π/2, π/2).If the \f$\theta_2\f$ is equal to -−π/2 or π/2,
+ * the solution is not unique, gimbal lock happened, we make \f$\theta_3 = 0\f$ in intrinsic rotations, and \f$\theta_1 = 0\f$ in extrinsic rotations.
+ * if using Proper Euler angles,the valid range could be[0, π]. When transform a quaternion to euler angles. The solution of euler angles is unique when \f$ \theta_2 \f$ is in (-−π/2, π/2).If the \f$\theta_2\f$ is equal to 0 or π,
+ * the solution is not unique, gimbal lock happened, we make \f$\theta_3 = 0\f$, and \f$\theta_1 = 0\f$ in extrinsic rotations.
+*/
 enum EulerAnglesOrder
 {
     INT_XYZ,
@@ -1541,11 +1569,20 @@ Quat<T> getPitch(T m);
 
 template <typename T>
 Quat<T> getBank(T m);
-
+/**
+     * @brief get a quaternion from an Euler angle.
+     * @param rad the Euler Angles in a vector of length 3
+     * @param order the convention order
+     */
 template <typename T>
-Quat<T> EularToAngles(const Vec<T, 3> &rad,EulerAnglesOrder order);
+Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order);
+/**
+     * @brief transform a quaternion to an Euler angle.
+     * @param quat the quaternion
+     * @param order the convention order
+     */
 template <typename T>
-Vec<T, 3> AnglesToEular(const Quat<T> &quat, EulerAnglesOrder order);
+Vec<T, 3> toEulerAngles(const Quat<T> &quat, EulerAnglesOrder order);
 
 using Quatd = Quat<double>;
 using Quatf = Quat<float>;

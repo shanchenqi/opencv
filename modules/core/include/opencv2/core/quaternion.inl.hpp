@@ -887,7 +887,7 @@ Quat<T> getBank(T m){
 
 
 template <typename T>
-Quat<T> EularToAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
+Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
     Quat<T> qEluar;
     switch (order)
     {
@@ -1098,7 +1098,7 @@ Quat<T> EularToAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
 }
 
 template <typename T>
-Vec<T, 3> AnglesToEular(const Quat<T> &quat, EulerAnglesOrder order){
+Vec<T, 3> toEulerAngles(const Quat<T> &quat, EulerAnglesOrder order){
     Vec<T, 3> Angles;
     T w = quat.w;//r
     T x = quat.x;//i
