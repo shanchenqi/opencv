@@ -50,63 +50,67 @@ enum QuatAssumeType
      */
     QUAT_ASSUME_UNIT
 };
+
 /** @brief Enum of the possible Euler Angles order.
 
  * Without considering the possibility of using two different conventions for the definition of the rotation axes ,
  * there exists twelve possible sequences of rotation axes, divided in two groups:
  * - Proper Euler angles (*z*-*x*-*z*, *x*-*y*-*x*, *y*-*z*-*y*, *z*-*y*-*z*, *x*-*z*-*x*, *y*-*x*-*y*)
  * - Tait–Bryan angles (*x*-*y*-*z*, *y*-*z*-*x*, *z*-*x*-*y*, *x*-*z*-*y*, *z*-*y*-*x*, *y*-*x*-*z*).
+ *
  * The three elemental rotations may be [extrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_extrinsic_rotations)
  * (rotations about the axes *xyz* of the original coordinate system, which is assumed to remain motionless),
  * or [intrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_intrinsic_rotations)(rotations about the axes of the rotating coordinate system *XYZ*, solidary with the moving body, which changes its orientation after each elemental rotation).
  *
- * Extrinsic and intrinsic rotations are relevant.For a rotation, \f$\theta_1 \f$ is rotation about the X-axis, \f$\theta_2 \f$ is rotation about the Y-axis,
+ * Extrinsic and intrinsic rotations are relevant. For a rotation, \f$\theta_1 \f$ is rotation about the X-axis, \f$\theta_2 \f$ is rotation about the Y-axis,
  * \f$\theta_3 \f$ is rotation about the Z-axis. If using intrinsic rotations, the rotation matrix \f$R =X(\theta_1) Y(\theta_2) Z(\theta_3) \f$,
  * if using extrinsic rotations, the rotation matrix \f$R =Z({\theta_3}) Y({\theta_2}) X({\theta_1})\f$,
- * which,
- * \f$X_\theta_1={\begin{bmatrix}1&0&0\\0&\cos \theta_1 &-\sin \theta_1 \\0&\sin \theta_1 &\cos \theta_1 \\\end{bmatrix}}\f$,
- * \f$Y_\theta_2={\begin{bmatrix}1&0&0\\0&\cos \theta_2 &-\sin \theta_2 \\0&\sin \theta_2 &\cos \theta_2 \\\end{bmatrix}}\f$,
- * \f$Z_\theta_3=\begin{bmatrix}\cos\theta_3 &-\sin \theta_3&0\\\sin \theta_3 &\cos \theta_3 &0\\0&0&1\\\end{bmatrix}}\f $,
+ * where,
+ * \f$X({\theta_1})={\begin{bmatrix}1&0&0\\0&\cos {\theta_1} &-\sin {\theta_1} \\0&\sin {\theta_1} &\cos {\theta_1} \\\end{bmatrix}}\f$,
+ * \f$Y({\theta_2})={\begin{bmatrix}\cos \theta_{2}&0&-\sin \theta_{2}\\0&1 &0 \\\sin \theta_2& 0&\cos \theta_{2} \\\end{bmatrix}}\f$,
+ * \f$Z({\theta_3})={\begin{bmatrix}\cos\theta_{3} &-\sin \theta_3&0\\\sin \theta_3 &\cos \theta_3 &0\\0&0&1\\\end{bmatrix}}\f$.
  *
  * The Euler Angles was built according to this set of conventions:
- * - [Right handed](https://en.wikipedia.org/wiki/Right_hand_rule) reference frames are adopted, and the [right hand rule](https://en.wikipedia.org/wiki/Right_hand_rule) is used to determine the sign of the angles \f $\theta_1\f$, \f$\theta_2\f$,\f$\theta_3\f$.
+ * - [Right handed](https://en.wikipedia.org/wiki/Right_hand_rule) reference frames are adopted, and the [right hand rule](https://en.wikipedia.org/wiki/Right_hand_rule) is used to determine the sign of the angles \f$ {\theta_1}\f$, \f${\theta_2}\f$,\f${\theta_3}\f$.
  * - Each matrix is meant to represent an [active rotation](https://en.wikipedia.org/wiki/Active_and_passive_transformation) (the composing and composed matrices
  * are supposed to act on the coordinates of vectors defined in the initial fixed reference frame and give as a result the coordinates of a rotated vector defined in the same reference frame).
- * - for \f$\theta_1\f$ and \f$\theta_3\f$, the valid range could be (−π, π].
- * for \f$\theta_2\f$, if using Tait–Bryan angles, the valid range could be[−π/2, π/2]. When transform a quaternion to euler angles. The solution of euler angles is unique when \f$ \theta_2 \f$ is in (-−π/2, π/2).If the \f$\theta_2\f$ is equal to -−π/2 or π/2,
- * the solution is not unique, gimbal lock happened, we make \f$\theta_3 = 0\f$ in intrinsic rotations, and \f$\theta_1 = 0\f$ in extrinsic rotations.
- * if using Proper Euler angles,the valid range could be[0, π]. When transform a quaternion to euler angles. The solution of euler angles is unique when \f$ \theta_2 \f$ is in (-−π/2, π/2).If the \f$\theta_2\f$ is equal to 0 or π,
- * the solution is not unique, gimbal lock happened, we make \f$\theta_3 = 0\f$, and \f$\theta_1 = 0\f$ in extrinsic rotations.
+ * - For \f$\theta_1\f$ and \f$\theta_3\f$, the valid range could be (−π, π].
+ *
+ *   For \f$\theta_2\f$, the valid range could be [−π/2, π/2] or [0, π].
+ *
+ *  If using Tait–Bryan angles, the valid range of \f$\theta_2\f$ could be[−π/2, π/2].When transform a quaternion to Euler angles. The solution of Euler angles is unique when \f$ \theta_2 \f$ is in (-−π/2, π/2).
+ *  If the \f$\theta_2\f$ is equal to -−π/2 or π/2,the solution is not unique, gimbal lock happened, we make \f$\theta_3 = 0\f$ in intrinsic rotations, and \f$\theta_1 = 0\f$ in extrinsic rotations.
+ *  If using Proper Euler angles,the valid range of \f$\theta_2\f$ could be[0, π]. When transform a quaternion to Euler angles. The solution of Euler angles is unique when \f$ \theta_2 \f$ is in (0, π).If the \f$\theta_2\f$ is equal to 0 or π,
+ *  the solution is not unique, gimbal lock happened, we make \f$\theta_3 = 0\f$ in intrinsic rotations, and \f$\theta_1 = 0\f$ in extrinsic rotations.
 */
-enum EulerAnglesOrder
+enum EulerAnglesType
 {
-    INT_XYZ,
-    INT_XZY,
-    INT_YXZ,
-    INT_YZX,
-    INT_ZXY,
-    INT_ZYX,
+    INT_XYZ,    ///< Intrinsic rotations with the order X,Y,Z
+    INT_XZY,    ///< Intrinsic rotations with the order X,Z,Y
+    INT_YXZ,    ///< Intrinsic rotations with the order Y,X,Z
+    INT_YZX,    ///< Intrinsic rotations with the order Y,Z,X
+    INT_ZXY,    ///< Intrinsic rotations with the order Z,X,Y
+    INT_ZYX,    ///< Intrinsic rotations with the order Z,Y,X
 
-    INT_YXY,
-    INT_ZXZ,
-    INT_XYX,
-    INT_ZYZ,
-    INT_YZY,
-    INT_XZX,
+    INT_YXY,    ///< Intrinsic rotations with the order Y,X,Y
+    INT_ZXZ,    ///< Intrinsic rotations with the order Z,Y,Z
+    INT_XYX,    ///< Intrinsic rotations with the order X,Y,X
+    INT_ZYZ,    ///< Intrinsic rotations with the order Z,Y,Z
+    INT_YZY,    ///< Intrinsic rotations with the order Y,Z,Y
+    INT_XZX,    ///< Intrinsic rotations with the order X,Z,X
 
-    EXT_XYZ,
-    EXT_XZY,
-    EXT_YXZ,
-    EXT_YZX,
-    EXT_ZXY,
-    EXT_ZYX,
-
-    EXT_YXY,
-    EXT_ZXZ,
-    EXT_XYX,
-    EXT_ZYZ,
-    EXT_XZX,
-    EXT_YZY
+    EXT_XYZ,    ///< Extrinsic rotations with the order X,Y,Z
+    EXT_XZY,    ///< Extrinsic rotations with the order X,Z,Y
+    EXT_YXZ,    ///< Extrinsic rotations with the order Y,X,Z
+    EXT_YZX,    ///< Extrinsic rotations with the order Y,Z,X
+    EXT_ZXY,    ///< Extrinsic rotations with the order Z,X,Y
+    EXT_ZYX,    ///< Extrinsic rotations with the order Z,Y,X
+    EXT_YXY,    ///< Extrinsic rotations with the order Y,X,Y
+    EXT_ZXZ,    ///< Extrinsic rotations with the order Z,X,Z
+    EXT_XYX,    ///< Extrinsic rotations with the order X,Y,X
+    EXT_ZYZ,    ///< Extrinsic rotations with the order Z,Y,Z
+    EXT_XZX,    ///< Extrinsic rotations with the order X,Z,X
+    EXT_YZY     ///< Extrinsic rotations with the order Y,Z,Y
 };
 template <typename _Tp> class Quat;
 template <typename _Tp> std::ostream& operator<<(std::ostream&, const Quat<_Tp>&);
@@ -254,6 +258,18 @@ public:
      * q.at(3) is equivalent to q.z.
      */
     _Tp at(size_t index) const;
+
+
+    /**
+     * @brief Transforming an Euler angle to a quatertion by combining the quaternion representations of the Euler rotations.
+     * For example, if we use intrinsic rotations with Euler angle order XYZ,\f$\theta_1 \f$ is rotation about the X-axis, \f$\theta_2 \f$ is rotation about the Y-axis,
+     * \f$\theta_3 \f$ is rotation about the Z-axis.
+     * \f[{\displaystyle \,\mathbf {q} = \,\mathbf {q_{\theta_1}} * \,\mathbf {q_{\theta_2}} *\,\mathbf {q_{\theta_3}}\ }\f]
+     * @param rad the Euler Angles in a vector of length 3
+     * @param order the convention order
+     */
+
+    static Quat<_Tp> createFromEulerAngles(const Vec<_Tp, 3> &rad, EulerAnglesType order);
 
     /**
      * @brief return the conjugate of this quaternion.
@@ -1491,7 +1507,77 @@ public:
     template <typename S>
     friend std::ostream& cv::operator<<(std::ostream&, const Quat<S>&);
 
+
+
+
+    /**
+     * @brief transform a quaternion q to an Euler angle.
+     * When transform a quaternion to an Euler angle, we can get rotation matrix M,
+     * \f[ \begin{aligned}\mathbf {M} &={\begin{bmatrix}1-2s(q_{j}^{2}+q_{k}^{2})&2s(q_{i}q_{j}-q_{k}q_{r})&2s(q_{i}q_{k}+q_{j}q_{r})\\2s(q_{i}q_{j}+q_{k}q_{r})&1-2s(q_{i}^{2}+q_{k}^{2})&2s(q_{j}q_{k}-q_{i}q_{r})\\2s(q_{i}q_{k}-q_{j}q_{r})&2s(q_{j}q_{k}+q_{i}q_{r})&1-2s(q_{i}^{2}+q_{j}^{2})\end{bmatrix}}\end{aligned}\f]
+     *
+     * For example, if we use intrinsic rotations with Euler angle order XYZ, we can get the rotation matrix \f$ M =M(X(\theta_1),Y(\theta_2),Z(\theta_3)) = XYZ\f$,
+     * \f[X_{1}Y_{2}Z_{3}={\begin{bmatrix}c_{2}c_{3}&-c_{2}s_{3}&s_{2}\\c_{1}s_{3}+c_{3}s_{1}s_{2}&c_{1}c_{3}-s_{1}s_{2}s_{3}&-c_{2}s_{1}\\s_{1}s_{3}-c_{1}c_{3}s_{2}&c_{3}s_{1}+c_{1}s_{2}s_{3}&c_{1}c_{2}\end{bmatrix}}\f]
+     * So,we can get \f$\begin{cases} \theta_1 = arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3=arctan(-m_{12},m_{11}) \end{cases}\f$
+     *
+     *  \f$\theta_1 \f$, \f$\theta_2 \f$, \f$\theta_2 \f$ is the three angles for an Euler Angle.
+     * Euler Angles order  | Normal | \f$\theta_2 = −π/2\f$ | \f$\theta_2 = π/2\f$
+     * ------------- | -------------| -------------| -------------
+     * INT_XYZ|\f$\begin{cases} \theta_1 = arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3=arctan2(-m_{12},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{32},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
+     * INT_XZY|\f$\begin{cases} \theta_1 = arctan2(m_{32},m_{22})\\\theta_2 = -arcsin(m_{12}) \\\theta_3=arctan2(m_{13},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{31},m_{33})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{23},m_{33})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
+     * INT_YXZ|\f$\begin{cases} \theta_1 = arctan2(m_{31},m_{33})\\\theta_2 = -arcsin(m_{23}) \\\theta_3=arctan2(m_{21},m_{22}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
+     * INT_YZX|\f$\begin{cases} \theta_1 = arctan2(-m_{31},m_{11})\\\theta_2 = -arcsin(m_{21}) \\\theta_3=arctan2(-m_{23},m_{22}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{13},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{13},m_{12})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
+     * INT_ZXY|\f$\begin{cases} \theta_1 = arctan2(-m_{12},m_{22})\\\theta_2 = arcsin(m_{32}) \\\theta_3=arctan2(-m_{31},m_{33}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
+     * INT_ZYX|\f$\begin{cases} \theta_1 = arctan2(m_{21},m_{11})\\\theta_2 = arcsin(-m_{31}) \\\theta_3=arctan2(m_{32},m_{33}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{12},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
+     * EXT_XYZ|\f$\begin{cases} theta_1 = arctan2(m_{32},m_{33})\\\theta_2 = arcsin(-m_{31}) \\\ \theta_3 = arctan2(m_{21},m_{11})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{23},m_{22}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{22}) \end{cases}\f$
+     * EXT_XZY|\f$\begin{cases} \theta_1 =arctan2(-m_{23},m_{22})\\\theta_2 = -arcsin(m_{21}) \\\theta_3=  arctan2(-m_{31},m_{11})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(-m_{13},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{13},m_{12}) \end{cases}\f$
+     * EXT_YXZ|\f$\begin{cases} \theta_1 =arctan2(-m_{31},m_{33}) \\\theta_2 = arcsin(m_{32}) \\\theta_3= arctan2(-m_{12},m_{22})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$
+     * EXT_YZX|\f$\begin{cases} \theta_1 = arctan2(m_{13},m_{11})\\\theta_2 = -arcsin(m_{12}) \\\theta_3= arctan2(m_{32},m_{22})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{31},m_{33}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{23},m_{33}) \end{cases}\f$
+     * EXT_ZXY|\f$\begin{cases} \theta_1 = arctan2(m_{21},m_{22})\\\theta_2 = -arcsin(m_{23}) \\\theta_3= arctan2(m_{31},m_{33})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \end{cases}\f$
+     * EXT_ZYX|\f$\begin{cases} \theta_1 = arctan2(-m_{12},m_{11})\\\theta_2 = arcsin(m_{13}) \\\theta_3= arctan2(-m_{23},m_{33})\end{cases}\f$|\f$\begin{cases} \theta_1=0,m_{22})\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21} \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{32},m_{22}) \end{cases}\f$
+     *
+     *  Euler Angles order  | Normal | \f$\theta_2 = 0\f$ | \f$\theta_2 = π\f$
+     * ------------- | -------------| -------------| -------------
+     * INT_XYX| \f$\begin{cases} \theta_1 = arctan2(m_{21},-m_{31})\\\theta_2 = arccos(m_{11}) \\\theta_3=arctan2(m_{12},m_{13}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
+     * INT_XZX| \f$\begin{cases} \theta_1 = arctan2(m_{31},m_{21})\\\theta_2 = arccos(m_{11}) \\\theta_3=arctan2(m_{13},-m_{12}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(-m_{32},m_{33})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
+     * INT_YXY| \f$\begin{cases} \theta_1 = arctan2(m_{12},m_{32})\\\theta_2 = arccos(m_{22}) \\\theta_3=arctan2(m_{21},-m_{23}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(-m_{31},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
+     * INT_YZY| \f$\begin{cases} \theta_1 = arctan2(m_{32},-m_{12})\\\theta_2 = arccos(m_{22}) \\\theta_3=arctan2(m_{23},m_{21}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{12},m_{11})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
+     * INT_ZXZ| \f$\begin{cases} \theta_1 = arctan2(-m_{13},m_{23})\\\theta_2 = arccos(m_{33}) \\\theta_3=arctan2(m_{31},m_{32}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
+     * INT_ZYZ| \f$\begin{cases} \theta_1 = arctan2(m_{23},m_{13})\\\theta_2 = arccos(m_{33}) \\\theta_3=arctan2(m_{32},-m_{31}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
+     * EXT_XYX|\f$\begin{cases} \theta_1 = arctan2(m_{12},m_{13}) \\\theta_2 = arccos(m_{11}) \\\theta_3= arctan2(m_{21},-m_{31})\end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3= \arctan2(m_{23},m_{22}) \end{cases}\f$
+     * EXT_XZX|\f$\begin{cases} \theta_1 = arctan2(m_{13},-m_{12})\\\theta_2 = arccos(m_{11}) \\\theta_3= arctan2(m_{31},m_{21})\end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{32},m_{33}) \end{cases}\f$
+     * EXT_YXY|\f$\begin{cases} \theta_1 =arctan2(m_{21},-m_{23})\\\theta_2 = arccos(m_{22}) \\\theta_3= arctan2(m_{12},m_{32}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{31},m_{11}) \end{cases}\f$
+     * EXT_YZY|\f$\begin{cases} \theta_1 =arctan2(m_{23},m_{21}) \\\theta_2 = arccos(m_{22}) \\\theta_3=arctan2(m_{32},-m_{12}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{12},m_{11}) \end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{13},m_{11}) \end{cases}\f$
+     * EXT_ZXZ|\f$\begin{cases} \theta_1 =arctan2(m_{31},m_{32}) \\\theta_2 = arccos(m_{33}) \\\theta_3= arctan2(-m_{13},m_{23})\end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{22}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$
+     * EXT_ZYZ|\f$\begin{cases} \theta_1 = arctan2(m_{32},-m_{31})\\\theta_2 = arccos(m_{33}) \\\theta_3=arctan2(m_{23},m_{13}) \end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$
+     *
+     * @param quat the quaternion
+     * @param order the convention order
+     */
+    //template <typename T>
+    Vec<_Tp, 3> toEulerAngles(const Quat<_Tp> &quat, EulerAnglesType order);
+
     _Tp w, x, y, z;
+    /**
+     * @brief get a quatertion from \f$\theta\f$rotation about the Y-axis.
+     * \f${\displaystyle \,\mathbf {q} = \cos(\theta/2)+0\,\mathbf {i}+sin(\theta/2)\,\mathbf {j} +0\,\mathbf {k} \ }\f$
+     */
+    //template <typename T>
+    Quat<_Tp> createFromYRotate(_Tp m);
+     /**
+     * @brief get a quatertion from \f$\theta\f$rotation about the X-axis.
+     * \f${\displaystyle \,\mathbf {q} = \cos(\theta/2)+sin(\theta/2)\,\mathbf {i}+0\,\mathbf {j} +0\,\mathbf {k} \ }\f$
+     */
+    //template <typename T>
+    Quat<_Tp> createFromXRotate(_Tp m);
+    /**
+     * @brief get a quatertion from \f$\theta\f$rotation about the Z-axis.
+     * \f${\displaystyle \,\mathbf {q} = \cos(\theta/2)+0\,\mathbf {i}+0\,\mathbf {j} +sin(\theta/2)\,\mathbf {k} \ }\f$
+     */
+    //template <typename T>
+    Quat<_Tp> createFromZRotate(_Tp m);
+
+
+
 
 };
 
@@ -1561,28 +1647,6 @@ Quat<T> operator*(const Quat<T>&, const T);
 template <typename S>
 std::ostream& operator<<(std::ostream&, const Quat<S>&);
 
-template <typename T>
-Quat<T> getHeading(T m);
-
-template <typename T>
-Quat<T> getPitch(T m);
-
-template <typename T>
-Quat<T> getBank(T m);
-/**
-     * @brief get a quaternion from an Euler angle.
-     * @param rad the Euler Angles in a vector of length 3
-     * @param order the convention order
-     */
-template <typename T>
-Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order);
-/**
-     * @brief transform a quaternion to an Euler angle.
-     * @param quat the quaternion
-     * @param order the convention order
-     */
-template <typename T>
-Vec<T, 3> toEulerAngles(const Quat<T> &quat, EulerAnglesOrder order);
 
 using Quatd = Quat<double>;
 using Quatf = Quat<float>;

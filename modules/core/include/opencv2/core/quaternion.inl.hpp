@@ -867,124 +867,124 @@ Quat<T> Quat<T>::spline(const Quat<T> &q0, const Quat<T> &q1, const Quat<T> &q2,
 }
 
 template <typename T>
-Quat<T> getHeading(T m)
+Quat<T> Quat<T>::createFromYRotate(T m)
 {
     Quat<T> H = { std::cos(m), 0, std::sin(m), 0};
     return H;
 }
 
 template <typename T>
-Quat<T> getPitch(T m){
+Quat<T> Quat<T>::createFromXRotate(T m){
     Quat<T> P = { std::cos(m), std::sin(m), 0, 0};
     return P;
 }
 
 template <typename T>
-Quat<T> getBank(T m){
+Quat<T> Quat<T>::createFromZRotate(T m){
     Quat<T> B = { std::cos(m), 0, 0, std::sin(m)};
     return B;
 }
 
 
 template <typename T>
-Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
+Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &rad,EulerAnglesType order){
     Quat<T> qEluar;
     switch (order)
     {
     case INT_XYZ:
     {
-        Quat<T> H = getHeading(rad(1)/2);
-        Quat<T> P = getPitch(rad(0)/2);
-        Quat<T> B = getBank(rad(2)/2);
+        Quat<T> H = createFromYRotate(rad(1)/2);
+        Quat<T> P = createFromXRotate(rad(0)/2);
+        Quat<T> B = createFromZRotate(rad(2)/2);
         qEluar = P * H * B;
         break;
     }
     case INT_XZY:
     {
-        Quat<T> H = getHeading(rad(2) / 2);
-        Quat<T> P = getPitch(rad(0) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
+        Quat<T> H = createFromYRotate(rad(2) / 2);
+        Quat<T> P = createFromXRotate(rad(0) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
         qEluar = P * B * H;
         break;
     }
     case INT_YXZ:
     {
-        Quat<T> H = getHeading(rad(0) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> B = getBank(rad(2) / 2);
+        Quat<T> H = createFromYRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> B = createFromZRotate(rad(2) / 2);
         qEluar = H * P * B;
         break;
     }
     case INT_YZX:
     {
-        Quat<T> H = getHeading(rad(0) / 2);
-        Quat<T> P = getPitch(rad(2) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
+        Quat<T> H = createFromYRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(2) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
         qEluar = H * B * P;
         break;
     }
     case INT_ZXY:
     {
-        Quat<T> H = getHeading(rad(2) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> B = getBank(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(2) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> B = createFromZRotate(rad(0) / 2);
         qEluar = B * P * H;
         break;
     }
     case INT_ZYX:
     {
-        Quat<T> H = getHeading(rad(1) / 2);
-        Quat<T> P = getPitch(rad(2) / 2);
-        Quat<T> B = getBank(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(1) / 2);
+        Quat<T> P = createFromXRotate(rad(2) / 2);
+        Quat<T> B = createFromZRotate(rad(0) / 2);
         qEluar = B * H * P;
         break;
     }
 
     case EXT_XYZ:
     {
-        Quat<T> H = getHeading(rad(1)/2);
-        Quat<T> P = getPitch(rad(0)/2);
-        Quat<T> B = getBank(rad(2)/2);
+        Quat<T> H = createFromYRotate(rad(1)/2);
+        Quat<T> P = createFromXRotate(rad(0)/2);
+        Quat<T> B = createFromZRotate(rad(2)/2);
         qEluar = B * H * P;
         break;
     }
     case EXT_XZY:
     {
-        Quat<T> H = getHeading(rad(2) / 2);
-        Quat<T> P = getPitch(rad(0) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
+        Quat<T> H = createFromYRotate(rad(2) / 2);
+        Quat<T> P = createFromXRotate(rad(0) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
         qEluar = H * B * P;
         break;
     }
     case EXT_YXZ:
     {
-        Quat<T> H = getHeading(rad(0) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> B = getBank(rad(2) / 2);
+        Quat<T> H = createFromYRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> B = createFromZRotate(rad(2) / 2);
         qEluar = B * P * H;
         break;
     }
     case EXT_YZX:
     {
-        Quat<T> H = getHeading(rad(0) / 2);
-        Quat<T> P = getPitch(rad(2) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
+        Quat<T> H = createFromYRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(2) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
         qEluar = P * B * H;
         break;
     }
     case EXT_ZXY:
     {
-        Quat<T> H = getHeading(rad(2) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> B = getBank(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(2) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> B = createFromZRotate(rad(0) / 2);
         qEluar = H * P * B;
         break;
     }
     case EXT_ZYX:
     {
-        Quat<T> H = getHeading(rad(1) / 2);
-        Quat<T> P = getPitch(rad(2) / 2);
-        Quat<T> B = getBank(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(1) / 2);
+        Quat<T> P = createFromXRotate(rad(2) / 2);
+        Quat<T> B = createFromZRotate(rad(0) / 2);
         qEluar = P * H * B;
         break;
     }
@@ -992,17 +992,17 @@ Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
 
     case INT_YXY:
     {
-        Quat<T> H1 = getHeading(rad(0) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> H2 = getHeading(rad(2) / 2);
+        Quat<T> H1 = createFromYRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> H2 = createFromYRotate(rad(2) / 2);
         qEluar = H1 * P * H2;
         break;
     }
     case EXT_YXY:
     {
-        Quat<T> H1 = getHeading(rad(0) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> H2 = getHeading(rad(2) / 2);
+        Quat<T> H1 = createFromYRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> H2 = createFromYRotate(rad(2) / 2);
         qEluar = H2 * P * H1;
         break;
     }
@@ -1010,81 +1010,81 @@ Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
 
     case INT_ZXZ:
     {
-        Quat<T> B1 = getBank(rad(0) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> B2 = getBank(rad(2) / 2);
+        Quat<T> B1 = createFromZRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> B2 = createFromZRotate(rad(2) / 2);
         qEluar = B1 * P * B2;
         break;
     }
     case EXT_ZXZ:
     {
-        Quat<T> B1 = getBank(rad(0) / 2);
-        Quat<T> P = getPitch(rad(1) / 2);
-        Quat<T> B2 = getBank(rad(2) / 2);
+        Quat<T> B1 = createFromZRotate(rad(0) / 2);
+        Quat<T> P = createFromXRotate(rad(1) / 2);
+        Quat<T> B2 = createFromZRotate(rad(2) / 2);
         qEluar = B2 * P * B1;
         break;
     }
     case INT_XYX:
     {
-        Quat<T> P1 = getPitch(rad(0) / 2);
-        Quat<T> H = getHeading(rad(1) / 2);
-        Quat<T> P2 = getPitch(rad(2) / 2);
+        Quat<T> P1 = createFromXRotate(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(1) / 2);
+        Quat<T> P2 = createFromXRotate(rad(2) / 2);
         qEluar = P1 * H * P2;
         break;
     }
     case EXT_XYX:
     {
-        Quat<T> P1 = getPitch(rad(0) / 2);
-        Quat<T> H = getHeading(rad(1) / 2);
-        Quat<T> P2 = getPitch(rad(2) / 2);
+        Quat<T> P1 = createFromXRotate(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(1) / 2);
+        Quat<T> P2 = createFromXRotate(rad(2) / 2);
         qEluar = P2 * H * P1;
         break;
     }
     case INT_ZYZ:
     {
-        Quat<T> B1 = getBank(rad(0) / 2);
-        Quat<T> H = getHeading(rad(1) / 2);
-        Quat<T> B2 = getBank(rad(2) / 2);
+        Quat<T> B1 = createFromZRotate(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(1) / 2);
+        Quat<T> B2 = createFromZRotate(rad(2) / 2);
         qEluar = B1 * H * B2;
         break;
     }
     case EXT_ZYZ:
     {
-        Quat<T> B1 = getBank(rad(0) / 2);
-        Quat<T> H = getHeading(rad(1) / 2);
-        Quat<T> B2 = getBank(rad(2) / 2);
+        Quat<T> B1 = createFromZRotate(rad(0) / 2);
+        Quat<T> H = createFromYRotate(rad(1) / 2);
+        Quat<T> B2 = createFromZRotate(rad(2) / 2);
         qEluar = B2 * H * B1;
         break;
     }
     case INT_YZY:
     {
-        Quat<T> H1 = getHeading(rad(0) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
-        Quat<T> H2 = getHeading(rad(2) / 2);
+        Quat<T> H1 = createFromYRotate(rad(0) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> H2 = createFromYRotate(rad(2) / 2);
         qEluar = H1 * B * H2;
         break;
     }
     case EXT_YZY:
     {
-        Quat<T> H1 = getHeading(rad(0) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
-        Quat<T> H2 = getHeading(rad(2) / 2);
+        Quat<T> H1 = createFromYRotate(rad(0) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> H2 = createFromYRotate(rad(2) / 2);
         qEluar = H2 * B * H1;
         break;
     }
     case INT_XZX:
     {
-        Quat<T> P1 = getPitch(rad(0) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
-        Quat<T> P2 = getPitch(rad(2) / 2);
+        Quat<T> P1 = createFromXRotate(rad(0) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> P2 = createFromXRotate(rad(2) / 2);
         qEluar = P1 * B * P2;
         break;
     }
     case EXT_XZX:
     {
-        Quat<T> P1 = getPitch(rad(0) / 2);
-        Quat<T> B = getBank(rad(1) / 2);
-        Quat<T> P2 = getPitch(rad(2) / 2);
+        Quat<T> P1 = createFromXRotate(rad(0) / 2);
+        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> P2 = createFromXRotate(rad(2) / 2);
 
         qEluar = P2 * B * P1;
         break;
@@ -1098,17 +1098,17 @@ Quat<T> fromEulerAngles(const Vec<T, 3> &rad,EulerAnglesOrder order){
 }
 
 template <typename T>
-Vec<T, 3> toEulerAngles(const Quat<T> &quat, EulerAnglesOrder order){
+Vec<T, 3> Quat<T>::toEulerAngles(const Quat<T> &quat, EulerAnglesType order){
     Vec<T, 3> Angles;
-    T w = quat.w;//r
-    T x = quat.x;//i
-    T y = quat.y;//j
-    T z = quat.z;//k
+    T qw = quat.w;//r
+    T qx = quat.x;//i
+    T qy = quat.y;//j
+    T qz = quat.z;//k
 
     static const double convertMatrix[3][3] ={
-        1 - 2 * y * y - 2 * z * z,2 * x * y - 2 * w * z,2 * x * z + 2 * w * y,
-        2 * x * y + 2 * w * z,1 - 2 * x * x - 2 * z * z,2 * y * z - 2 * w * x,
-        2 * x * z - 2 * w * y,2 * y * z + 2 * w * x,1 - 2 * x * x - 2 * y * y
+        1 - 2 * qy * qy - 2 * qz * qz,2 * qx * qy - 2 * qw * qz,2 * qx * qz + 2 * qw * qy,
+        2 * qx * qy + 2 * qw * qz,1 - 2 * qx * qx - 2 * qz * z,2 * qy * qz - 2 * qw * qx,
+        2 * qx * qz - 2 * qw * qy,2 * qy * qz + 2 * qw * qx,1 - 2 * qx * qx - 2 * qy * qy
     };
     switch (order)
     {
