@@ -258,6 +258,50 @@ TEST_F(QuatTest, interpolation){
     EXPECT_EQ(Quatd::spline(tr1, tr2, tr3, tr3, 0.5), Quatd(0.336889853392, 0.543600719487, 0.543600719487, 0.543600719487));
 }
 
+TEST_F(QuatTest, EulerAngles){
+    Vec3d test_angle={0.523598,0.78539,1.04719};
+    Quatd qEuler1 = Quatd::createFromEulerAngles(test_angle,INT_XYZ);
+    Quatd qEuler2 = Quatd::createFromEulerAngles(test_angle,INT_XZY);
+    Quatd qEuler3 = Quatd::createFromEulerAngles(test_angle,INT_XZX);
+    Quatd qEuler4 = Quatd::createFromEulerAngles(test_angle,INT_YXZ);
+    Quatd qEuler5 = Quatd::createFromEulerAngles(test_angle,INT_YZX);
+    EXPECT_EQ(qEuler1,Quatd(0.7233214, 0.3919013,0.2005605,0.5319728) );
+    EXPECT_EQ(qEuler2,Quatd(0.8223654, 0.0222635, 0.3604221, 0.4396766) );
+    EXPECT_EQ(qEuler3,Quatd(0.653285, 0.65328, 0.0990435, 0.369641) );
+    EXPECT_EQ(qEuler4,Quatd(0.822365, 0.439677, 0.0222635, 0.360422) );
+    EXPECT_EQ(qEuler5,Quatd(0.723321, 0.531973, 0.391901, 0.20056) );
+    Vec3d Euler_Angles_1 = qEuler1.toEulerAngles(INT_XYZ);
+    Vec3d Euler_Angles_2 = qEuler2.toEulerAngles(INT_XZY);
+    Vec3d Euler_Angles_3 = qEuler3.toEulerAngles(INT_XZX);
+    Vec3d Euler_Angles_4 = qEuler4.toEulerAngles(INT_YXZ);
+    Vec3d Euler_Angles_5 = qEuler5.toEulerAngles(INT_YZX);
+    EXPECT_NEAR(Euler_Angles_1[0], test_angle[0], 1e-6);
+    EXPECT_NEAR(Euler_Angles_1[1], test_angle[1], 1e-6);
+    EXPECT_NEAR(Euler_Angles_1[2], test_angle[2], 1e-6);
+    EXPECT_NEAR(Euler_Angles_2[0], test_angle[0], 1e-6);
+    EXPECT_NEAR(Euler_Angles_2[1], test_angle[1], 1e-6);
+    EXPECT_NEAR(Euler_Angles_2[2], test_angle[2], 1e-6);
+    EXPECT_NEAR(Euler_Angles_3[0], test_angle[0], 1e-6);
+    EXPECT_NEAR(Euler_Angles_3[1], test_angle[1], 1e-6);
+    EXPECT_NEAR(Euler_Angles_3[2], test_angle[2], 1e-6);
+    EXPECT_NEAR(Euler_Angles_4[0], test_angle[0], 1e-6);
+    EXPECT_NEAR(Euler_Angles_4[1], test_angle[1], 1e-6);
+    EXPECT_NEAR(Euler_Angles_4[2], test_angle[2], 1e-6);
+    EXPECT_NEAR(Euler_Angles_5[0], test_angle[0], 1e-6);
+    EXPECT_NEAR(Euler_Angles_5[1], test_angle[1], 1e-6);
+    EXPECT_NEAR(Euler_Angles_5[2], test_angle[2], 1e-6);
+
+    Quatd qEulerLock1 = { 0.5612665, 0.43042, 0.5607083, 0.4304935};
+    Vec3d test_angle_lock1 = {1.3089878, CV_PI/2, 0};
+    Vec3d Euler_Angles_solute_1 = qEulerLock1.toEulerAngles(INT_XYZ);
+    EXPECT_NEAR(Euler_Angles_solute_1[0], test_angle_lock1[0], 1e-6);
+    EXPECT_NEAR(Euler_Angles_solute_1[1], test_angle_lock1[1], 1e-6);
+    EXPECT_NEAR(Euler_Angles_solute_1[2], test_angle_lock1[2], 1e-6);
+
+
+}
+
+
 } // namespace
 
 }// opencv_test

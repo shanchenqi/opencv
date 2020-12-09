@@ -867,124 +867,124 @@ Quat<T> Quat<T>::spline(const Quat<T> &q0, const Quat<T> &q1, const Quat<T> &q2,
 }
 
 template <typename T>
-Quat<T> Quat<T>::createFromYRotate(T m)
+Quat<T> Quat<T>::createFromYRot(T m)
 {
     Quat<T> H = { std::cos(m), 0, std::sin(m), 0};
     return H;
 }
 
 template <typename T>
-Quat<T> Quat<T>::createFromXRotate(T m){
+Quat<T> Quat<T>::createFromXRot(T m){
     Quat<T> P = { std::cos(m), std::sin(m), 0, 0};
     return P;
 }
 
 template <typename T>
-Quat<T> Quat<T>::createFromZRotate(T m){
+Quat<T> Quat<T>::createFromZRot(T m){
     Quat<T> B = { std::cos(m), 0, 0, std::sin(m)};
     return B;
 }
 
 
 template <typename T>
-Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &rad,EulerAnglesType order){
+Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> rad,EulerAnglesType order){
     Quat<T> qEluar;
     switch (order)
     {
     case INT_XYZ:
     {
-        Quat<T> H = createFromYRotate(rad(1)/2);
-        Quat<T> P = createFromXRotate(rad(0)/2);
-        Quat<T> B = createFromZRotate(rad(2)/2);
+        Quat<T> H =  Quat<T>::createFromYRot(rad(1)/2);
+        Quat<T> P =  Quat<T>::createFromXRot(rad(0)/2);
+        Quat<T> B =  Quat<T>::createFromZRot(rad(2)/2);
         qEluar = P * H * B;
         break;
     }
     case INT_XZY:
     {
-        Quat<T> H = createFromYRotate(rad(2) / 2);
-        Quat<T> P = createFromXRotate(rad(0) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> H =  Quat<T>::createFromYRot(rad(2) / 2);
+        Quat<T> P =  Quat<T>::createFromXRot(rad(0) / 2);
+        Quat<T> B =  Quat<T>::createFromZRot(rad(1) / 2);
         qEluar = P * B * H;
         break;
     }
     case INT_YXZ:
     {
-        Quat<T> H = createFromYRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> B = createFromZRotate(rad(2) / 2);
+        Quat<T> H  =  Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> P =  Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(2) / 2);
         qEluar = H * P * B;
         break;
     }
     case INT_YZX:
     {
-        Quat<T> H = createFromYRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(2) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(2) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
         qEluar = H * B * P;
         break;
     }
     case INT_ZXY:
     {
-        Quat<T> H = createFromYRotate(rad(2) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> B = createFromZRotate(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(2) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(0) / 2);
         qEluar = B * P * H;
         break;
     }
     case INT_ZYX:
     {
-        Quat<T> H = createFromYRotate(rad(1) / 2);
-        Quat<T> P = createFromXRotate(rad(2) / 2);
-        Quat<T> B = createFromZRotate(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(2) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(0) / 2);
         qEluar = B * H * P;
         break;
     }
 
     case EXT_XYZ:
     {
-        Quat<T> H = createFromYRotate(rad(1)/2);
-        Quat<T> P = createFromXRotate(rad(0)/2);
-        Quat<T> B = createFromZRotate(rad(2)/2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1)/2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(0)/2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(2)/2);
         qEluar = B * H * P;
         break;
     }
     case EXT_XZY:
     {
-        Quat<T> H = createFromYRotate(rad(2) / 2);
-        Quat<T> P = createFromXRotate(rad(0) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(2) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(0) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
         qEluar = H * B * P;
         break;
     }
     case EXT_YXZ:
     {
-        Quat<T> H = createFromYRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> B = createFromZRotate(rad(2) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(2) / 2);
         qEluar = B * P * H;
         break;
     }
     case EXT_YZX:
     {
-        Quat<T> H = createFromYRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(2) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(2) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
         qEluar = P * B * H;
         break;
     }
     case EXT_ZXY:
     {
-        Quat<T> H = createFromYRotate(rad(2) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> B = createFromZRotate(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(2) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(0) / 2);
         qEluar = H * P * B;
         break;
     }
     case EXT_ZYX:
     {
-        Quat<T> H = createFromYRotate(rad(1) / 2);
-        Quat<T> P = createFromXRotate(rad(2) / 2);
-        Quat<T> B = createFromZRotate(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(2) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(0) / 2);
         qEluar = P * H * B;
         break;
     }
@@ -992,17 +992,17 @@ Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &rad,EulerAnglesType orde
 
     case INT_YXY:
     {
-        Quat<T> H1 = createFromYRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> H2 = createFromYRotate(rad(2) / 2);
+        Quat<T> H1 = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> H2 = Quat<T>::createFromYRot(rad(2) / 2);
         qEluar = H1 * P * H2;
         break;
     }
     case EXT_YXY:
     {
-        Quat<T> H1 = createFromYRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> H2 = createFromYRotate(rad(2) / 2);
+        Quat<T> H1 = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> H2 = Quat<T>::createFromYRot(rad(2) / 2);
         qEluar = H2 * P * H1;
         break;
     }
@@ -1010,81 +1010,81 @@ Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &rad,EulerAnglesType orde
 
     case INT_ZXZ:
     {
-        Quat<T> B1 = createFromZRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> B2 = createFromZRotate(rad(2) / 2);
+        Quat<T> B1 = Quat<T>::createFromZRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> B2 = Quat<T>::createFromZRot(rad(2) / 2);
         qEluar = B1 * P * B2;
         break;
     }
     case EXT_ZXZ:
     {
-        Quat<T> B1 = createFromZRotate(rad(0) / 2);
-        Quat<T> P = createFromXRotate(rad(1) / 2);
-        Quat<T> B2 = createFromZRotate(rad(2) / 2);
+        Quat<T> B1 = Quat<T>::createFromZRot(rad(0) / 2);
+        Quat<T> P = Quat<T>::createFromXRot(rad(1) / 2);
+        Quat<T> B2 = Quat<T>::createFromZRot(rad(2) / 2);
         qEluar = B2 * P * B1;
         break;
     }
     case INT_XYX:
     {
-        Quat<T> P1 = createFromXRotate(rad(0) / 2);
-        Quat<T> H = createFromYRotate(rad(1) / 2);
-        Quat<T> P2 = createFromXRotate(rad(2) / 2);
+        Quat<T> P1 = Quat<T>::createFromXRot(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1) / 2);
+        Quat<T> P2 = Quat<T>::createFromXRot(rad(2) / 2);
         qEluar = P1 * H * P2;
         break;
     }
     case EXT_XYX:
     {
-        Quat<T> P1 = createFromXRotate(rad(0) / 2);
-        Quat<T> H = createFromYRotate(rad(1) / 2);
-        Quat<T> P2 = createFromXRotate(rad(2) / 2);
+        Quat<T> P1 = Quat<T>::createFromXRot(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1) / 2);
+        Quat<T> P2 = Quat<T>::createFromXRot(rad(2) / 2);
         qEluar = P2 * H * P1;
         break;
     }
     case INT_ZYZ:
     {
-        Quat<T> B1 = createFromZRotate(rad(0) / 2);
-        Quat<T> H = createFromYRotate(rad(1) / 2);
-        Quat<T> B2 = createFromZRotate(rad(2) / 2);
+        Quat<T> B1 = Quat<T>::createFromZRot(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1) / 2);
+        Quat<T> B2 = Quat<T>::createFromZRot(rad(2) / 2);
         qEluar = B1 * H * B2;
         break;
     }
     case EXT_ZYZ:
     {
-        Quat<T> B1 = createFromZRotate(rad(0) / 2);
-        Quat<T> H = createFromYRotate(rad(1) / 2);
-        Quat<T> B2 = createFromZRotate(rad(2) / 2);
+        Quat<T> B1 = Quat<T>::createFromZRot(rad(0) / 2);
+        Quat<T> H = Quat<T>::createFromYRot(rad(1) / 2);
+        Quat<T> B2 = Quat<T>::createFromZRot(rad(2) / 2);
         qEluar = B2 * H * B1;
         break;
     }
     case INT_YZY:
     {
-        Quat<T> H1 = createFromYRotate(rad(0) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
-        Quat<T> H2 = createFromYRotate(rad(2) / 2);
+        Quat<T> H1 = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
+        Quat<T> H2 = Quat<T>::createFromYRot(rad(2) / 2);
         qEluar = H1 * B * H2;
         break;
     }
     case EXT_YZY:
     {
-        Quat<T> H1 = createFromYRotate(rad(0) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
-        Quat<T> H2 = createFromYRotate(rad(2) / 2);
+        Quat<T> H1 = Quat<T>::createFromYRot(rad(0) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
+        Quat<T> H2 = Quat<T>::createFromYRot(rad(2) / 2);
         qEluar = H2 * B * H1;
         break;
     }
     case INT_XZX:
     {
-        Quat<T> P1 = createFromXRotate(rad(0) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
-        Quat<T> P2 = createFromXRotate(rad(2) / 2);
+        Quat<T> P1 = Quat<T>::createFromXRot(rad(0) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
+        Quat<T> P2 = Quat<T>::createFromXRot(rad(2) / 2);
         qEluar = P1 * B * P2;
         break;
     }
     case EXT_XZX:
     {
-        Quat<T> P1 = createFromXRotate(rad(0) / 2);
-        Quat<T> B = createFromZRotate(rad(1) / 2);
-        Quat<T> P2 = createFromXRotate(rad(2) / 2);
+        Quat<T> P1 = Quat<T>::createFromXRot(rad(0) / 2);
+        Quat<T> B = Quat<T>::createFromZRot(rad(1) / 2);
+        Quat<T> P2 = Quat<T>::createFromXRot(rad(2) / 2);
 
         qEluar = P2 * B * P1;
         break;
@@ -1098,135 +1098,139 @@ Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &rad,EulerAnglesType orde
 }
 
 template <typename T>
-Vec<T, 3> Quat<T>::toEulerAngles(const Quat<T> &quat, EulerAnglesType order){
+Vec<T, 3> Quat<T>::toEulerAngles( EulerAnglesType order){
     Vec<T, 3> Angles;
-    T qw = quat.w;//r
-    T qx = quat.x;//i
-    T qy = quat.y;//j
-    T qz = quat.z;//k
+    T a = w, b = x, c = y, d = z;
+    Quat<T> qTemp = normalize();
+    a = qTemp.w;
+    b = qTemp.x;
+    c = qTemp.y;
+    d = qTemp.z;
 
-    static const double convertMatrix[3][3] ={
-        1 - 2 * qy * qy - 2 * qz * qz,2 * qx * qy - 2 * qw * qz,2 * qx * qz + 2 * qw * qy,
-        2 * qx * qy + 2 * qw * qz,1 - 2 * qx * qx - 2 * qz * z,2 * qy * qz - 2 * qw * qx,
-        2 * qx * qz - 2 * qw * qy,2 * qy * qz + 2 * qw * qx,1 - 2 * qx * qx - 2 * qy * qy
+
+    const double convertMatrix[3][3] ={
+        1 - 2 * (c * c + d * d), 2 * (b * c - a * d)    , 2 * (b * d + a * c),
+        2 * (b * c + a * d)    , 1 - 2 * (b * b + d * d), 2 * (c * d - a * b),
+        2 * (b * d - a * c)    , 2 * (c * d + a * b)    , 1 - 2 * (b * b + c * c)
     };
+
     switch (order)
     {
 
     case INT_XYZ:
     {
-        if(convertMatrix[0][2]-1<1e-06){
+        if(abs(convertMatrix[0][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][0], convertMatrix[1][1]), CV_PI / 2, 0};
             break;
         }
-        else if(convertMatrix[0][2]+1<1e-06){
+        else if(abs(convertMatrix[0][2]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[2][1], convertMatrix[1][1]), -CV_PI / 2, 0};
             break;
         }
         Angles(0) = std::atan2(-convertMatrix[1][2], convertMatrix[2][2]);
-        Angles(1) = std::atan2(convertMatrix[0][2],std::sqrt(1-convertMatrix[0][2]*convertMatrix[0][2]));
+        Angles(1) = std::asin(convertMatrix[0][2]);
         Angles(2) = std::atan2(-convertMatrix[0][1],convertMatrix[0][0]);
         break;
     }
     case INT_XZY:
     {
-         if(convertMatrix[0][1]-1<1e-06){
+         if(abs(convertMatrix[0][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[1][2],convertMatrix[2][2]), -CV_PI/2, 0};
             break;
         }
-        else if(convertMatrix[0][1]+1<1e-06){
+        else if(abs(convertMatrix[0][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[2][0], convertMatrix[2][2]), CV_PI / 2, 0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[2][1],convertMatrix[1][1]);
-        Angles(1) = std::atan2(-convertMatrix[0][1],std::sqrt(1-convertMatrix[0][1]*convertMatrix[0][1]));
+        Angles(1) = std::asin(-convertMatrix[0][1]);
         Angles(2) = std::atan2(convertMatrix[0][2],convertMatrix[0][0]);
 
         break;
     }
     case INT_XYX:
     {
-        if(convertMatrix[0][0]-1<1e-06){
+        if(abs(convertMatrix[0][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[2][1],convertMatrix[2][2]),0,0};
             break;
         }
-        else if(convertMatrix[0][0]+1<1e-06){
+        else if(abs(convertMatrix[0][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][2],convertMatrix[1][1]),CV_PI,0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[1][0],-convertMatrix[2][0]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[0][0]*convertMatrix[0][0]),convertMatrix[0][0]);
+        Angles(1) = std::acos(convertMatrix[0][0]);
         Angles(2) = std::atan2(convertMatrix[0][1],convertMatrix[0][2]);
 
         break;
     }
     case INT_XZX:
     {
-        if(convertMatrix[0][0]-1<1e-06){
+        if(abs(convertMatrix[0][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[2][1],convertMatrix[2][2]),0,0};
             break;
         }
-        else if(convertMatrix[0][0]+1<1e-06){
+        else if(abs(convertMatrix[0][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[2][1],convertMatrix[2][2]), CV_PI, 0};
 
             break;
         }
         Angles(0) = std::atan2(convertMatrix[2][0],convertMatrix[1][0]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[0][0]*convertMatrix[0][0]),convertMatrix[0][0]);
+        Angles(1) = std::acos(convertMatrix[0][0]);
         Angles(2) = std::atan2(convertMatrix[0][2],-convertMatrix[0][1]);
 
         break;
     }
     case INT_YXZ:
     {
-        if(convertMatrix[1][2]-1<1e-06){
+        if(abs(convertMatrix[1][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[0][1],convertMatrix[0][0]),-CV_PI/2,0};
             break;
         }
-        else if(convertMatrix[1][2]+1<1e-06){
+        else if(abs(convertMatrix[1][2]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[0][1],convertMatrix[0][0]),CV_PI/2,0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[0][2],convertMatrix[2][2]);
-        Angles(1) = std::atan2(-convertMatrix[1][2],std::sqrt(1-convertMatrix[1][2]*convertMatrix[1][2]));
+        Angles(1) = std::asin(-convertMatrix[1][2]);
         Angles(2) = std::atan2(convertMatrix[1][0],convertMatrix[1][1]);
         break;
     }
     case INT_YZX:
     {
-        if(convertMatrix[1][0]-1<1e-06){
+        if(abs(convertMatrix[1][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[0][2],convertMatrix[2][2]),CV_PI/2,0};
             break;
         }
-        else if(convertMatrix[1][0]+1<1e-06){
+        else if(abs(convertMatrix[1][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[0][2],convertMatrix[0][1]),-CV_PI/2,0};
             break;
         }
         Angles(0) = std::atan2(-convertMatrix[2][0],convertMatrix[0][0]);
-        Angles(1) = std::atan2(convertMatrix[1][0],std::sqrt(1-convertMatrix[1][0]*convertMatrix[1][0]));
+        Angles(1) = std::asin(convertMatrix[1][0]);
         Angles(2) = std::atan2(-convertMatrix[1][2],convertMatrix[1][1]);
         break;
     }
     case INT_YXY:
     {
-         if(convertMatrix[1][1]-1<1e-06){
+         if(abs(convertMatrix[1][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = { std::atan2(convertMatrix[0][2],convertMatrix[0][0]), 0, 0};
             break;
         }
-        else if(convertMatrix[1][1]+1<1e-06){
+        else if(abs(convertMatrix[1][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles= {std::atan2(-convertMatrix[2][0],convertMatrix[0][0]),CV_PI,0};
             break;
@@ -1238,105 +1242,105 @@ Vec<T, 3> Quat<T>::toEulerAngles(const Quat<T> &quat, EulerAnglesType order){
     }
     case INT_YZY:
     {
-        if(convertMatrix[1][1]-1<1e-06){
+        if(abs(convertMatrix[1][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[0][2],convertMatrix[0][0]),0 ,0};
             break;
         }
-        else if(convertMatrix[1][1]+1<1e-06){
+        else if(abs(convertMatrix[1][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[0][2],convertMatrix[0][0]), CV_PI,0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[2][1],-convertMatrix[0][1]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[1][1]*convertMatrix[1][1]),convertMatrix[1][1]);
+        Angles(1) = std::acos(convertMatrix[1][1]);
         Angles(2) = std::atan2(convertMatrix[1][2],convertMatrix[1][0]);
         break;
     }
     case INT_ZXY:
     {
-        if(convertMatrix[2][1]-1<1e-06){
+        if(abs(convertMatrix[2][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][0],convertMatrix[0][0]),CV_PI/2,0};
             break;
         }
-        else if(convertMatrix[2][1]+1<1e-06){
+        else if(abs(convertMatrix[2][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][0],convertMatrix[0][0]),-CV_PI/2,0};
 
             break;
         }
         Angles(0) = std::atan2(-convertMatrix[0][1],convertMatrix[1][1]);
-        Angles(1) = std::atan2(convertMatrix[2][1],std::sqrt(1-convertMatrix[2][1]*convertMatrix[2][1]));
+        Angles(1) = std::asin(convertMatrix[2][1]);
         Angles(2) = std::atan2(-convertMatrix[2][0],convertMatrix[2][2]);
         break;
     }
     case INT_ZYX:
     {
-         if(convertMatrix[2][0]-1<1e-06){
+         if(abs(convertMatrix[2][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[0][1],convertMatrix[1][1]),-CV_PI/2,0};
             break;
         }
-        else if(convertMatrix[2][0]+1<1e-06){
+        else if(abs(convertMatrix[2][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][2],convertMatrix[1][1]),CV_PI/2,0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[1][0],convertMatrix[0][0]);
-        Angles(1) = std::atan2(-convertMatrix[2][0],std::sqrt(1-convertMatrix[2][0]*convertMatrix[2][0]));
+        Angles(1) = std::asin(-convertMatrix[2][0]);
         Angles(2) = std::atan2(convertMatrix[2][1],convertMatrix[2][2]);
         break;
     }
     case INT_ZXZ:
     {
-        if(convertMatrix[2][2]-1<1e-06){
+        if(abs(convertMatrix[2][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][0],convertMatrix[1][1]),0,0};
             break;
         }
-        else if(convertMatrix[2][2]+1<1e-06){
+        else if(abs(convertMatrix[2][2]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(-convertMatrix[1][0],convertMatrix[0][0]),CV_PI,0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[0][2],-convertMatrix[1][2]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[2][2]*convertMatrix[2][2]),convertMatrix[2][2]);
+        Angles(1) = std::acos(convertMatrix[2][2]);
         Angles(2) = std::atan2(convertMatrix[2][0],convertMatrix[2][1]);
         break;
     }
     case INT_ZYZ:
     {
-        if(convertMatrix[2][2]-1<1e-06){
+        if(abs(convertMatrix[2][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles ={ std::atan2(-convertMatrix[1][0],convertMatrix[0][0]),0,0};
             break;
         }
-        else if(convertMatrix[2][0]+1<1e-06){
+        else if(abs(convertMatrix[2][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {std::atan2(convertMatrix[1][0],convertMatrix[0][0]),CV_PI,0};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[1][2],convertMatrix[0][2]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[2][2]*convertMatrix[2][2]),convertMatrix[2][2]);
+        Angles(1) = std::acos(convertMatrix[2][2]);
         Angles(2) = std::atan2(convertMatrix[2][1],-convertMatrix[2][0]);
         break;
     }
 
     case EXT_XYZ:
     {
-        if(convertMatrix[2][0]-1<1e-06){
+        if(abs(convertMatrix[2][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles ={ 0, -CV_PI/2,std::atan2(-convertMatrix[0][1],convertMatrix[1][1])};
             break;
         }
-        else if(convertMatrix[2][0]+1<1e-06){
+        else if(abs(convertMatrix[2][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI/2,std::atan2(convertMatrix[1][2],convertMatrix[1][1])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[2][1],convertMatrix[2][2]);
-        Angles(1) = std::atan2(-convertMatrix[2][0],std::sqrt(1-convertMatrix[2][0]*convertMatrix[2][0]));
+        Angles(1) = std::asin(-convertMatrix[2][0]);
         Angles(2) = std::atan2(convertMatrix[1][0],convertMatrix[0][0]);
 
 
@@ -1344,84 +1348,84 @@ Vec<T, 3> Quat<T>::toEulerAngles(const Quat<T> &quat, EulerAnglesType order){
     }
     case EXT_XZY:
     {
-        if(convertMatrix[1][0]-1<1e-06){
+        if(abs(convertMatrix[1][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI/2,std::atan2(-convertMatrix[0][2],convertMatrix[2][2])};
             break;
         }
-        else if(convertMatrix[1][0]+1<1e-06){
+        else if(abs(convertMatrix[1][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
-            Angles = 0,-CV_PI/2,std::atan2(-convertMatrix[0][2],convertMatrix[0][1]);
+            Angles = {0,-CV_PI/2,std::atan2(-convertMatrix[0][2],convertMatrix[0][1])};
             break;
         }
         Angles(0) = std::atan2(-convertMatrix[1][2],convertMatrix[1][1]);
-        Angles(1) = std::atan2(-convertMatrix[1][0],std::sqrt(1-convertMatrix[1][0]*convertMatrix[1][0]));
+        Angles(1) = std::asin(-convertMatrix[1][0]);
         Angles(2) = std::atan2(-convertMatrix[2][0],convertMatrix[0][0]);
 
         break;
     }
     case EXT_XYX:
     {
-          if(convertMatrix[0][0]-1<1e-06){
+          if(abs(convertMatrix[0][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,0,std::atan2(convertMatrix[2][1],convertMatrix[2][2])};
             break;
         }
-        else if(convertMatrix[0][0]+1<1e-06){
+        else if(abs(convertMatrix[0][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles ={ 0,CV_PI,std::atan2(convertMatrix[1][2],convertMatrix[1][1])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[0][1],convertMatrix[0][2]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[0][0]*convertMatrix[0][0]),convertMatrix[0][0]);
+        Angles(1) = std::acos(convertMatrix[0][0]);
         Angles(2) = std::atan2(convertMatrix[1][0],-convertMatrix[2][0]);
 
         break;
     }
     case EXT_XZX:
     {
-         if(convertMatrix[0][0]-1<1e-06){
+         if(abs(convertMatrix[0][0]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,0,std::atan2(convertMatrix[2][1],convertMatrix[2][2])};
             break;
         }
-        else if(convertMatrix[0][0]+1<1e-06){
+        else if(abs(convertMatrix[0][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI,std::atan2(-convertMatrix[2][1],convertMatrix[2][2])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[0][2],-convertMatrix[0][1]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[0][0]*convertMatrix[0][0]),convertMatrix[0][0]);
+        Angles(1) = std::acos(convertMatrix[0][0]);
         Angles(2) = std::atan2(convertMatrix[2][0],convertMatrix[1][0]);
         break;
     }
     case EXT_YXZ:
     {
-        if(convertMatrix[2][1]-1<1e-06){
+        if(abs(convertMatrix[2][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles ={ 0,CV_PI/2,std::atan2(convertMatrix[1][0],convertMatrix[0][0])};
             break;
         }
-        else if(convertMatrix[2][1]+1<1e-06){
+        else if(abs(convertMatrix[2][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,-CV_PI/2,std::atan2(convertMatrix[1][0],convertMatrix[0][0])};
             break;
         }
         Angles(0) = std::atan2(-convertMatrix[2][0],convertMatrix[2][2]);
-        Angles(1) = std::atan2(convertMatrix[2][1],std::sqrt(1-convertMatrix[2][1]*convertMatrix[2][1]));
+        Angles(1) = std::asin(convertMatrix[2][1]);
         Angles(2) = std::atan2(-convertMatrix[0][1],convertMatrix[1][1]);
 
         break;
     }
     case EXT_YZX:
     {
-        if(convertMatrix[0][2]-1<1e-06)
+        if(abs(convertMatrix[0][2]-1)<1e-06)
         {
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,-CV_PI/2,std::atan2(-convertMatrix[1][2],convertMatrix[2][2])};
             break;
         }
-        else if(convertMatrix[0][2]+1<1e-06)
+        else if(abs(convertMatrix[0][2]+1)<1e-06)
         {
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI/2,std::atan2(convertMatrix[2][0],convertMatrix[2][2])};
@@ -1429,111 +1433,111 @@ Vec<T, 3> Quat<T>::toEulerAngles(const Quat<T> &quat, EulerAnglesType order){
         }
 
         Angles(0) = std::atan2(convertMatrix[0][2],convertMatrix[0][0]);
-        Angles(1) = std::atan2(-convertMatrix[0][1],std::sqrt(1-convertMatrix[0][1]*convertMatrix[0][1]));
+        Angles(1) = std::asin(-convertMatrix[0][1]);
         Angles(2) = std::atan2(convertMatrix[2][1],convertMatrix[1][1]);
         break;
     }
     case EXT_YXY:
     {
-        if(convertMatrix[1][1]-1<1e-06){
+        if(abs(convertMatrix[1][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,0,std::atan2(convertMatrix[0][2],convertMatrix[0][0])};
             break;
         }
-        else if(convertMatrix[1][1]+1<1e-06){
+        else if(abs(convertMatrix[1][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI,std::atan2(-convertMatrix[2][0],convertMatrix[0][0])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[1][0],-convertMatrix[1][2]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[1][1]*convertMatrix[1][1]),convertMatrix[1][1]);
+        Angles(1) = std::acos(convertMatrix[1][1]);
         Angles(2) = std::atan2(convertMatrix[0][1],convertMatrix[2][1]);
         break;
     }
     case EXT_YZY:
     {
-        if(convertMatrix[1][1]-1<1e-06){
+        if(abs(convertMatrix[1][1]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,0,std::atan2(convertMatrix[0][2],convertMatrix[0][0])};
             break;
         }
-        else if(convertMatrix[1][1]+1<1e-06){
+        else if(abs(convertMatrix[1][1]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI,std::atan2(convertMatrix[0][2],convertMatrix[0][0])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[1][2],convertMatrix[1][0]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[1][1]*convertMatrix[1][1]),convertMatrix[1][1]);
+        Angles(1) = std::acos(convertMatrix[1][1]);
         Angles(2) = std::atan2(convertMatrix[2][1],-convertMatrix[0][1]);
         break;
     }
     case EXT_ZXY:
     {
-        if(convertMatrix[1][2]-1<1e-06){
+        if(abs(convertMatrix[1][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,-CV_PI/2,std::atan2(-convertMatrix[0][1],convertMatrix[0][0])};
             break;
         }
-        else if(convertMatrix[1][2]+1<1e-06){
+        else if(abs(convertMatrix[1][2]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI/2,std::atan2(-convertMatrix[0][1],convertMatrix[0][0])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[1][0],convertMatrix[1][1]);
-        Angles(1) = std::atan2(-convertMatrix[1][2],std::sqrt(1-convertMatrix[1][2]*convertMatrix[1][2]));
+        Angles(1) = std::asin(-convertMatrix[1][2]);
         Angles(2) = std::atan2(convertMatrix[0][2],convertMatrix[2][2]);
         break;
     }
     case EXT_ZYX:
     {
-        if(convertMatrix[0][2]-1<1e-06){
+        if(abs(convertMatrix[0][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI/2,std::atan2(convertMatrix[1][0],convertMatrix[1][1])};
             break;
         }
-        else if(convertMatrix[0][2]+1<1e-06){
+        else if(abs(convertMatrix[0][2]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles= {0,-CV_PI/2,std::atan2(convertMatrix[2][1],convertMatrix[1][1])};
             break;
         }
 
         Angles(0) = std::atan2(-convertMatrix[0][1],convertMatrix[0][0]);
-        Angles(1) = std::atan2(convertMatrix[0][2],std::sqrt(1-convertMatrix[0][2]*convertMatrix[0][2]));
+        Angles(1) = std::asin(convertMatrix[0][2]);
         Angles(2) = std::atan2(-convertMatrix[1][2], convertMatrix[2][2]);
         break;
     }
     case EXT_ZXZ:
     {
-         if(convertMatrix[2][2]-1<1e-06){
+         if(abs(convertMatrix[2][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,0,std::atan2(convertMatrix[1][0],convertMatrix[1][1])};
             break;
         }
-        else if(convertMatrix[2][2]+1<1e-06){
+        else if(abs(convertMatrix[2][2]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI,std::atan2(-convertMatrix[1][0],convertMatrix[0][0])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[2][0],convertMatrix[2][1]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[2][2]*convertMatrix[2][2]),convertMatrix[2][2]);
+        Angles(1) = std::acos(convertMatrix[2][2]);
         Angles(2) = std::atan2(convertMatrix[0][2],-convertMatrix[1][2]);
 
         break;
     }
     case EXT_ZYZ:
     {
-         if(convertMatrix[2][2]-1<1e-06){
+         if(abs(convertMatrix[2][2]-1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,0,std::atan2(convertMatrix[1][0],convertMatrix[0][0])};
             break;
         }
-        else if(convertMatrix[2][0]+1<1e-06){
+        else if(abs(convertMatrix[2][0]+1)<1e-06){
             std::cout<<"WARNING:Gimbal Lock happened." <<std::endl;
             Angles = {0,CV_PI,std::atan2(convertMatrix[1][0],convertMatrix[0][0])};
             break;
         }
         Angles(0) = std::atan2(convertMatrix[2][1],-convertMatrix[2][0]);
-        Angles(1) = std::atan2(std::sqrt(1-convertMatrix[2][2]*convertMatrix[2][2]),convertMatrix[2][2]);
+        Angles(1) = std::acos(convertMatrix[2][2]);
         Angles(2) = std::atan2(convertMatrix[1][2],convertMatrix[0][2]);
         break;
     }
