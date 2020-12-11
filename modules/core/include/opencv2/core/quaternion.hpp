@@ -30,31 +30,33 @@
 #include <iostream>
 namespace cv
 {
-//! @addtogroup core
-//! @{
+    //! @addtogroup core
+    //! @{
 
-//! Unit quaternion flag
-enum QuatAssumeType
-{
-    /**
+    //! Unit quaternion flag
+    enum QuatAssumeType
+    {
+        /**
      * This flag is specified by default.
      * If this flag is specified, the input quaternions are assumed to be not unit quaternions.
      * It can guarantee the correctness of the calculations,
      * although the calculation speed will be slower than the flag QUAT_ASSUME_UNIT.
      */
-    QUAT_ASSUME_NOT_UNIT,
-    /**
+        QUAT_ASSUME_NOT_UNIT,
+        /**
      * If this flag is specified, the input quaternions are assumed to be unit quaternions which
      * will save some computations. However, if this flag is specified without unit quaternion,
      * the program correctness of the result will not be guaranteed.
      */
-    QUAT_ASSUME_UNIT
-};
+        QUAT_ASSUME_UNIT
+    };
 
-template <typename _Tp> class Quat;
-template <typename _Tp> std::ostream& operator<<(std::ostream&, const Quat<_Tp>&);
+    template <typename _Tp>
+    class Quat;
+    template <typename _Tp>
+    std::ostream &operator<<(std::ostream &, const Quat<_Tp> &);
 
-/**
+    /**
  * Quaternion is a number system that extends the complex numbers. It can be expressed as a
  * rotation in three-dimensional space.
  * A quaternion is generally represented in the form:
@@ -128,15 +130,14 @@ template <typename _Tp> std::ostream& operator<<(std::ostream&, const Quat<_Tp>&
  * std::cout << q.at(0) << std::endl;
  * ```
  */
-template <typename _Tp>
-class Quat
-{
-    static_assert(std::is_floating_point<_Tp>::value, "Quaternion only make sense with type of float or double");
-    using value_type = _Tp;
+    template <typename _Tp>
+    class Quat
+    {
+        static_assert(std::is_floating_point<_Tp>::value, "Quaternion only make sense with type of float or double");
+        using value_type = _Tp;
 
-public:
-
-/** @brief Enum of Euler Angles type.
+    public:
+        /** @brief Enum of Euler Angles type.
 
  * Without considering the possibility of using two different convertions for the definition of the rotation axes ,
  * there exists twelve possible sequences of rotation axes, divided in two groups:
@@ -147,6 +148,7 @@ public:
  * (rotations about the axes *xyz* of the original coordinate system, which is assumed to remain motionless),
  * or [intrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_intrinsic_rotations)(rotations about the axes of the rotating coordinate system *XYZ*, solidary with the moving body, which changes its orientation after each elemental rotation).
  *
+ *
  * Extrinsic and intrinsic rotations are relevant.
  *
  * The definition of the Euler angles is as following,
@@ -154,8 +156,8 @@ public:
  * - \f$\theta_2 \f$ represents a rotation angle around the Y-axis,
  * - \f$\theta_3 \f$ represents a rotation angle around the Z-axis.
  *
- * For intrinsic rotations with Euler Angles order X-Y-Z, the rotation matrix R can be calculated by:\f[R =X(\theta_1) Y(\theta_2) Z(\theta_3) \f]
- * For extrinsic rotations with Euler Angles order X-Y-Z, the rotation matrix R can be calculated by:\f[R =Z({\theta_3}) Y({\theta_2}) X({\theta_1})\f]
+ * For intrinsic rotations in the order of X-Y-Z, the rotation matrix R can be calculated by:\f[R =X(\theta_1) Y(\theta_2) Z(\theta_3) \f]
+ * For extrinsic rotations in the order of X-Y-Z, the rotation matrix R can be calculated by:\f[R =Z({\theta_3}) Y({\theta_2}) X({\theta_1})\f]
  * where
  * \f[X({\theta_1})={\begin{bmatrix}1&0&0\\0&\cos {\theta_1} &-\sin {\theta_1} \\0&\sin {\theta_1} &\cos {\theta_1} \\\end{bmatrix}},
  * Y({\theta_2})={\begin{bmatrix}\cos \theta_{2}&0&\sin \theta_{2}\\0&1 &0 \\\ -sin \theta_2& 0&\cos \theta_{2} \\\end{bmatrix}},
@@ -171,69 +173,69 @@ public:
  *   For \f$\theta_2\f$, the valid range is [−π/2, π/2] or [0, π].
  *
  *   For Tait–Bryan angles, the valid range of \f$\theta_2\f$ is [−π/2, π/2]. When transforming a quaternion to Euler angles, the solution of Euler angles is unique in condition of \f$ \theta_2 \in (−π/2, π/2)\f$ .
- *   If \f$\theta_2 = −π/2 \f$ or \f$ \theta_2 = π/2\f$, there are infinite solution. The common name for this situation is gimbal lock.
- *   For Proper Euler angles,the valid range of \f$\theta_2\f$ is in [0, π]. The solution of Euler angles is unique in condition of  \f$ \theta_2 \in (0, π)\f$ . If \f$\theta_2 =0 \f$ or \f$\theta_2 =π \f$,
- *   there are infinite solution and gimbal lock happened which is similar to Tait–Bryan angles.
+ *   If \f$\theta_2 = −π/2 \f$ or \f$ \theta_2 = π/2\f$, there are infinite solutions(many solutions). The common name for this situation is gimbal lock.
+ *   For Proper Euler angles,the valid range of \f$\theta_2\f$ is in [0, π]. The solutions of Euler angles are unique in condition of  \f$ \theta_2 \in (0, π)\f$ . If \f$\theta_2 =0 \f$ or \f$\theta_2 =π \f$,
+ *   there are infinite solution(many solutions) and gimbal lock orrur.
 */
-    enum EulerAnglesType
-    {
-        INT_XYZ,    ///< Intrinsic rotations with the Euler angles type X-Y-Z
-        INT_XZY,    ///< Intrinsic rotations with the Euler angles type X-Z-Y
-        INT_YXZ,    ///< Intrinsic rotations with the Euler angles type Y-X-Z
-        INT_YZX,    ///< Intrinsic rotations with the Euler angles type Y-Z-X
-        INT_ZXY,    ///< Intrinsic rotations with the Euler angles type Z-X-Y
-        INT_ZYX,    ///< Intrinsic rotations with the Euler angles type Z-Y-X
+        enum EulerAnglesType
+        {
+            INT_XYZ, ///< Intrinsic rotations with the Euler angles type X-Y-Z
+            INT_XZY, ///< Intrinsic rotations with the Euler angles type X-Z-Y
+            INT_YXZ, ///< Intrinsic rotations with the Euler angles type Y-X-Z
+            INT_YZX, ///< Intrinsic rotations with the Euler angles type Y-Z-X
+            INT_ZXY, ///< Intrinsic rotations with the Euler angles type Z-X-Y
+            INT_ZYX, ///< Intrinsic rotations with the Euler angles type Z-Y-X
 
-        INT_YXY,    ///< Intrinsic rotations with the Euler angles type Y-X-Y
-        INT_ZXZ,    ///< Intrinsic rotations with the Euler angles type Z-X-Z
-        INT_XYX,    ///< Intrinsic rotations with the Euler angles type X-Y-X
-        INT_ZYZ,    ///< Intrinsic rotations with the Euler angles type Z-Y-Z
-        INT_YZY,    ///< Intrinsic rotations with the Euler angles type Y-Z-Y
-        INT_XZX,    ///< Intrinsic rotations with the Euler angles type X-Z-X
+            INT_YXY, ///< Intrinsic rotations with the Euler angles type Y-X-Y
+            INT_ZXZ, ///< Intrinsic rotations with the Euler angles type Z-X-Z
+            INT_XYX, ///< Intrinsic rotations with the Euler angles type X-Y-X
+            INT_ZYZ, ///< Intrinsic rotations with the Euler angles type Z-Y-Z
+            INT_YZY, ///< Intrinsic rotations with the Euler angles type Y-Z-Y
+            INT_XZX, ///< Intrinsic rotations with the Euler angles type X-Z-X
 
-        EXT_XYZ,    ///< Extrinsic rotations with the Euler angles type X-Y-Z
-        EXT_XZY,    ///< Extrinsic rotations with the Euler angles type X-Z-Y
-        EXT_YXZ,    ///< Extrinsic rotations with the Euler angles type Y-X-Z
-        EXT_YZX,    ///< Extrinsic rotations with the Euler angles type Y-Z-X
-        EXT_ZXY,    ///< Extrinsic rotations with the Euler angles type Z-X-Y
-        EXT_ZYX,    ///< Extrinsic rotations with the Euler angles type Z-Y-X
-        EXT_YXY,    ///< Extrinsic rotations with the Euler angles type Y-X-Y
-        EXT_ZXZ,    ///< Extrinsic rotations with the Euler angles type Z-X-Z
-        EXT_XYX,    ///< Extrinsic rotations with the Euler angles type X-Y-X
-        EXT_ZYZ,    ///< Extrinsic rotations with the Euler angles type Z-Y-Z
-        EXT_XZX,    ///< Extrinsic rotations with the Euler angles type X-Z-X
-        EXT_YZY     ///< Extrinsic rotations with the Euler angles type Y-Z-Y
-    };
-    static constexpr _Tp CV_QUAT_EPS = (_Tp)1.e-6;
+            EXT_XYZ, ///< Extrinsic rotations with the Euler angles type X-Y-Z
+            EXT_XZY, ///< Extrinsic rotations with the Euler angles type X-Z-Y
+            EXT_YXZ, ///< Extrinsic rotations with the Euler angles type Y-X-Z
+            EXT_YZX, ///< Extrinsic rotations with the Euler angles type Y-Z-X
+            EXT_ZXY, ///< Extrinsic rotations with the Euler angles type Z-X-Y
+            EXT_ZYX, ///< Extrinsic rotations with the Euler angles type Z-Y-X
+            EXT_YXY, ///< Extrinsic rotations with the Euler angles type Y-X-Y
+            EXT_ZXZ, ///< Extrinsic rotations with the Euler angles type Z-X-Z
+            EXT_XYX, ///< Extrinsic rotations with the Euler angles type X-Y-X
+            EXT_ZYZ, ///< Extrinsic rotations with the Euler angles type Z-Y-Z
+            EXT_XZX, ///< Extrinsic rotations with the Euler angles type X-Z-X
+            EXT_YZY  ///< Extrinsic rotations with the Euler angles type Y-Z-Y
+        };
+        static constexpr _Tp CV_QUAT_EPS = (_Tp)1.e-6;
 
-    static constexpr _Tp CV_QUAT_CONVERT_THRESHOLD = (_Tp)1.e-6;
+        static constexpr _Tp CV_QUAT_CONVERT_THRESHOLD = (_Tp)1.e-6;
 
-    Quat();
+        Quat();
 
-    /**
+        /**
      * @brief From Vec4d or Vec4f.
      */
-    explicit Quat(const Vec<_Tp, 4> &coeff);
+        explicit Quat(const Vec<_Tp, 4> &coeff);
 
-    /**
+        /**
      * @brief from four numbers.
      */
-    Quat(_Tp w, _Tp x, _Tp y, _Tp z);
+        Quat(_Tp w, _Tp x, _Tp y, _Tp z);
 
-    /**
+        /**
      * @brief from an angle, axis. Axis will be normalized in this function. And
      * it generates
      * \f[q = [\cos\psi, u_x\sin\psi,u_y\sin\psi,  u_z\sin\psi].\f]
      * where \f$\psi = \frac{\theta}{2}\f$, \f$\theta\f$ is the rotation angle.
      */
-    static Quat<_Tp> createFromAngleAxis(const _Tp angle, const Vec<_Tp, 3> &axis);
+        static Quat<_Tp> createFromAngleAxis(const _Tp angle, const Vec<_Tp, 3> &axis);
 
-    /**
+        /**
      * @brief from a 3x3 rotation matrix.
      */
-    static Quat<_Tp> createFromRotMat(InputArray R);
+        static Quat<_Tp> createFromRotMat(InputArray R);
 
-    /**
+        /**
      * @brief from a rotation vector
      * \f$r\f$ has the form \f$\theta \cdot \boldsymbol{u}\f$, where \f$\theta\f$
      * represents rotation angle and \f$\boldsymbol{u}\f$ represents normalized rotation axis.
@@ -251,9 +253,9 @@ public:
      *  \f[q = [\cos\psi, \boldsymbol{u}\sin\psi]\f]
      *  where \f$\psi = \theta / 2 \f$
      */
-    static Quat<_Tp> createFromRvec(InputArray rvec);
+        static Quat<_Tp> createFromRvec(InputArray rvec);
 
-    /**
+        /**
      * @brief a way to get element.
      * @param index over a range [0, 3].
      *
@@ -267,31 +269,32 @@ public:
      *
      * q.at(3) is equivalent to q.z.
      */
-    _Tp at(size_t index) const;
+        _Tp at(size_t index) const;
 
-
-    /**
+        /**
      * @brief
-     * get a quatertion from Euler angles by combining the quaternion representations of the Euler rotations.
+     * from Euler angles
      *
-     * For example, if we use intrinsic rotations with Euler angles type XYZ,\f$\theta_1 \f$ is rotation about the X-axis, \f$\theta_2 \f$ is rotation about the Y-axis,
-     * \f$\theta_3 \f$ is rotation about the Z-axis. The final quatertion q can be calculated by
+     * A quatertion can be generated from Euler angles by combining the quaternion representations of the Euler rotations.
+     *
+     * For example, if we use intrinsic rotations in the order of X-Y-Z,\f$\theta_1 \f$ is rotation around the X-axis, \f$\theta_2 \f$ is rotation around the Y-axis,
+     * \f$\theta_3 \f$ is rotation around the Z-axis. The final quatertion q can be calculated by
      *
      * \f[ {q} = q_{X, \theta_1}  q_{Y, \theta_2} q_{Z, \theta_3}\f]
-     * where, \f$ q_{X, \theta_1} \f$ is created from @ref createFromXRot,  \f$ q_{Y, \theta_2} \f$ is created from @ref createFromYRot,
+     * where \f$ q_{X, \theta_1} \f$ is created from @ref createFromXRot,  \f$ q_{Y, \theta_2} \f$ is created from @ref createFromYRot,
      *  \f$ q_{Z, \theta_3} \f$ is created from @ref createFromZRot.
      * @param angles the Euler angles in a vector of length 3
      * @param eulerAnglesType the convertion Euler angles type
      */
-    static Quat<_Tp> createFromEulerAngles(const Vec<_Tp, 3> angles, EulerAnglesType eulerAnglesType);
+        static Quat<_Tp> createFromEulerAngles(const Vec<_Tp, 3> angles, EulerAnglesType eulerAnglesType);
 
-    /**
+        /**
      * @brief return the conjugate of this quaternion.
      * \f[q.conjugate() = (w, -x, -y, -z).\f]
      */
-    Quat<_Tp> conjugate() const;
+        Quat<_Tp> conjugate() const;
 
-    /**
+        /**
      *
      * @brief return the value of exponential value.
      * \f[\exp(q) = e^w (\cos||\boldsymbol{v}||+ \frac{v}{||\boldsymbol{v}||})\sin||\boldsymbol{v}||\f]
@@ -304,10 +307,10 @@ public:
      * cout << exp(q) << endl;
      * ```
      */
-    template <typename T>
-    friend Quat<T> exp(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> exp(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return the value of exponential value.
      * \f[\exp(q) = e^w (\cos||\boldsymbol{v}||+ \frac{v}{||\boldsymbol{v}||}\sin||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -318,9 +321,9 @@ public:
      * cout << q.exp() << endl;
      * ```
      */
-    Quat<_Tp> exp() const;
+        Quat<_Tp> exp() const;
 
-    /**
+        /**
      * @brief return the value of logarithm function.
      * \f[\ln(q) = \ln||q|| + \frac{\boldsymbol{v}}{||\boldsymbol{v}||}\arccos\frac{w}{||q||}.\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -333,10 +336,10 @@ public:
      * cout << log(q1) << endl;
      * ```
      */
-    template <typename T>
-    friend Quat<T> log(const Quat<T> &q, QuatAssumeType assumeUnit);
+        template <typename T>
+        friend Quat<T> log(const Quat<T> &q, QuatAssumeType assumeUnit);
 
-    /**
+        /**
      * @brief return the value of logarithm function.
      *  \f[\ln(q) = \ln||q|| + \frac{\boldsymbol{v}}{||\boldsymbol{v}||}\arccos\frac{w}{||q||}\f].
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -352,9 +355,9 @@ public:
      * q1.normalize().log(assumeUnit);
      * ```
      */
-    Quat<_Tp> log(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Quat<_Tp> log(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief return the value of power function with index \f$x\f$.
      * \f[q^x = ||q||(cos(x\theta) + \boldsymbol{u}sin(x\theta))).\f]
      * @param q a quaternion.
@@ -374,10 +377,10 @@ public:
      * ```
      * @note the type of the index should be the same as the quaternion.
      */
-    template <typename T>
-    friend Quat<T> power(const Quat<T> &q, const T x, QuatAssumeType assumeUnit);
+        template <typename T>
+        friend Quat<T> power(const Quat<T> &q, const T x, QuatAssumeType assumeUnit);
 
-    /**
+        /**
      * @brief return the value of power function with index \f$x\f$.
      * \f[q^x = ||q||(\cos(x\theta) + \boldsymbol{u}\sin(x\theta))).\f]
      * @param x index of exponentiation.
@@ -395,9 +398,9 @@ public:
      * q1.power(2.0, assumeUnit); //This assumeUnt means q1 is a unit quaternion
      * ```
      */
-    Quat<_Tp> power(const _Tp x, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Quat<_Tp> power(const _Tp x, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief return \f$\sqrt{q}\f$.
      * @param q a quaternion.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion q assume to be a unit quaternion and this function will save some computations.
@@ -412,10 +415,10 @@ public:
      * sqrt(q, assumeUnit); //This assumeUnit means q is a unit quaternion.
      * ```
      */
-    template <typename T>
-    friend Quat<T> sqrt(const Quat<T> &q, QuatAssumeType assumeUnit);
+        template <typename T>
+        friend Quat<T> sqrt(const Quat<T> &q, QuatAssumeType assumeUnit);
 
-    /**
+        /**
      * @brief return \f$\sqrt{q}\f$.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and this function will save some computations.
      *
@@ -429,9 +432,9 @@ public:
      * q.sqrt(assumeUnit); //This assumeUnit means q is a unit quaternion
      * ```
      */
-    Quat<_Tp> sqrt(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Quat<_Tp> sqrt(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief return the value of power function with quaternion \f$q\f$.
      * \f[p^q = e^{q\ln(p)}.\f]
      * @param p base quaternion of power function.
@@ -449,10 +452,10 @@ public:
      * power(p, q, assumeUnit); //This assumeUnit means p is a unit quaternion
      * ```
      */
-    template <typename T>
-    friend Quat<T> power(const Quat<T> &p, const Quat<T> &q, QuatAssumeType assumeUnit);
+        template <typename T>
+        friend Quat<T> power(const Quat<T> &p, const Quat<T> &q, QuatAssumeType assumeUnit);
 
-    /**
+        /**
      * @brief return the value of power function with quaternion \f$q\f$.
      * \f[p^q = e^{q\ln(p)}.\f]
      * @param q index quaternion of power function.
@@ -469,9 +472,9 @@ public:
      * p.power(q, assumeUnit); //This assumeUnit means p is a unit quaternion
      * ```
      */
-    Quat<_Tp> power(const Quat<_Tp> &q, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Quat<_Tp> power(const Quat<_Tp> &q, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief return the crossProduct between \f$p = (a, b, c, d) = (a, \boldsymbol{u})\f$ and \f$q = (w, x, y, z) = (w, \boldsymbol{v})\f$.
      * \f[p \times q = \frac{pq- qp}{2}\f]
      * \f[p \times q = \boldsymbol{u} \times \boldsymbol{v}\f]
@@ -484,10 +487,10 @@ public:
      * crossProduct(p, q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> crossProduct(const Quat<T> &p, const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> crossProduct(const Quat<T> &p, const Quat<T> &q);
 
-    /**
+        /**
      * @brief return the crossProduct between \f$p = (a, b, c, d) = (a, \boldsymbol{u})\f$ and \f$q = (w, x, y, z) = (w, \boldsymbol{v})\f$.
      * \f[p \times q = \frac{pq- qp}{2}.\f]
      * \f[p \times q = \boldsymbol{u} \times \boldsymbol{v}.\f]
@@ -500,22 +503,22 @@ public:
      * p.crossProduct(q)
      * ```
      */
-    Quat<_Tp> crossProduct(const Quat<_Tp> &q) const;
+        Quat<_Tp> crossProduct(const Quat<_Tp> &q) const;
 
-    /**
+        /**
      * @brief return the norm of quaternion.
      * \f[||q|| = \sqrt{w^2 + x^2 + y^2 + z^2}.\f]
      */
-    _Tp norm() const;
+        _Tp norm() const;
 
-    /**
+        /**
      * @brief return a normalized \f$p\f$.
      * \f[p = \frac{q}{||q||}\f]
      * where \f$p\f$ satisfies \f$(p.x)^2 + (p.y)^2 + (p.z)^2 + (p.w)^2 = 1.\f$
      */
-    Quat<_Tp> normalize() const;
+        Quat<_Tp> normalize() const;
 
-    /**
+        /**
      * @brief return \f$q^{-1}\f$ which is an inverse of \f$q\f$
      * which satisfies \f$q * q^{-1} = 1\f$.
      * @param q a quaternion.
@@ -531,10 +534,10 @@ public:
      * inv(q, assumeUnit);//This assumeUnit means p is a unit quaternion
      * ```
      */
-    template <typename T>
-    friend Quat<T> inv(const Quat<T> &q, QuatAssumeType assumeUnit);
+        template <typename T>
+        friend Quat<T> inv(const Quat<T> &q, QuatAssumeType assumeUnit);
 
-    /**
+        /**
      * @brief return \f$q^{-1}\f$ which is an inverse of \f$q\f$
      * satisfying \f$q * q^{-1} = 1\f$.
      * @param assumeUnit if QUAT_ASSUME_UNIT, quaternion q assume to be a unit quaternion and this function will save some computations.
@@ -549,9 +552,9 @@ public:
      * q.inv(assumeUnit);  //assumeUnit means p is a unit quaternion
      * ```
      */
-    Quat<_Tp> inv(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Quat<_Tp> inv(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief return sinh value of quaternion q, sinh could be calculated as:
      * \f[\sinh(p) = \sin(w)\cos(||\boldsymbol{v}||) + \cosh(w)\frac{v}{||\boldsymbol{v}||}\sin||\boldsymbol{v}||\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -563,10 +566,10 @@ public:
      * sinh(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> sinh(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> sinh(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return sinh value of this quaternion, sinh could be calculated as:
      * \f$\sinh(p) = \sin(w)\cos(||\boldsymbol{v}||) + \cosh(w)\frac{v}{||\boldsymbol{v}||}\sin||\boldsymbol{v}||\f$
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -577,9 +580,9 @@ public:
      * q.sinh();
      * ```
      */
-    Quat<_Tp> sinh() const;
+        Quat<_Tp> sinh() const;
 
-    /**
+        /**
      * @brief return cosh value of quaternion q, cosh could be calculated as:
      * \f[\cosh(p) = \cosh(w) * \cos(||\boldsymbol{v}||) + \sinh(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sin(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -591,10 +594,10 @@ public:
      * cosh(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> cosh(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> cosh(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return cosh value of this quaternion, cosh could be calculated as:
      * \f[\cosh(p) = \cosh(w) * \cos(||\boldsymbol{v}||) + \sinh(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}sin(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -605,9 +608,9 @@ public:
      * q.cosh();
      * ```
      */
-    Quat<_Tp> cosh() const;
+        Quat<_Tp> cosh() const;
 
-    /**
+        /**
      * @brief return tanh value of quaternion q, tanh could be calculated as:
      * \f[ \tanh(q) = \frac{\sinh(q)}{\cosh(q)}.\f]
      * @param q a quaternion.
@@ -619,10 +622,10 @@ public:
      * ```
      * @sa sinh, cosh
      */
-    template <typename T>
-    friend Quat<T> tanh(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> tanh(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return tanh value of this quaternion, tanh could be calculated as:
      * \f[ \tanh(q) = \frac{\sinh(q)}{\cosh(q)}.\f]
      *
@@ -633,9 +636,9 @@ public:
      * ```
      * @sa sinh, cosh
      */
-    Quat<_Tp> tanh() const;
+        Quat<_Tp> tanh() const;
 
-    /**
+        /**
      * @brief return tanh value of quaternion q, sin could be calculated as:
      * \f[\sin(p) = \sin(w) * \cosh(||\boldsymbol{v}||) + \cos(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sinh(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -647,10 +650,10 @@ public:
      * sin(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> sin(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> sin(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return sin value of this quaternion, sin could be calculated as:
      * \f[\sin(p) = \sin(w) * \cosh(||\boldsymbol{v}||) + \cos(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sinh(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -661,9 +664,9 @@ public:
      * q.sin();
      * ```
      */
-    Quat<_Tp> sin() const;
+        Quat<_Tp> sin() const;
 
-    /**
+        /**
      * @brief return sin value of quaternion q, cos could be calculated as:
      * \f[\cos(p) = \cos(w) * \cosh(||\boldsymbol{v}||) - \sin(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sinh(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -675,10 +678,10 @@ public:
      * cos(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> cos(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> cos(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return cos value of this quaternion, cos could be calculated as:
      * \f[\cos(p) = \cos(w) * \cosh(||\boldsymbol{v}||) - \sin(w)\frac{\boldsymbol{v}}{||\boldsymbol{v}||}\sinh(||\boldsymbol{v}||)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -689,9 +692,9 @@ public:
      * q.cos();
      * ```
      */
-    Quat<_Tp> cos() const;
+        Quat<_Tp> cos() const;
 
-    /**
+        /**
      * @brief return tan value of quaternion q, tan could be calculated as:
      * \f[\tan(q) = \frac{\sin(q)}{\cos(q)}.\f]
      * @param q a quaternion.
@@ -702,10 +705,10 @@ public:
      * tan(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> tan(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> tan(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return tan value of this quaternion, tan could be calculated as:
      * \f[\tan(q) = \frac{\sin(q)}{\cos(q)}.\f]
      *
@@ -715,9 +718,9 @@ public:
      * q.tan();
      * ```
      */
-    Quat<_Tp> tan() const;
+        Quat<_Tp> tan() const;
 
-    /**
+        /**
      * @brief return arcsin value of quaternion q, arcsin could be calculated as:
      * \f[\arcsin(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arcsinh(q\frac{\boldsymbol{v}}{||\boldsymbol{v}||})\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -729,10 +732,10 @@ public:
      * asin(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> asin(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> asin(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return arcsin value of this quaternion, arcsin could be calculated as:
      * \f[\arcsin(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arcsinh(q\frac{\boldsymbol{v}}{||\boldsymbol{v}||})\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -743,9 +746,9 @@ public:
      * q.asin();
      * ```
      */
-    Quat<_Tp> asin() const;
+        Quat<_Tp> asin() const;
 
-    /**
+        /**
      * @brief return arccos value of quaternion q, arccos could be calculated as:
      * \f[\arccos(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arccosh(q)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -757,10 +760,10 @@ public:
      * acos(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> acos(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> acos(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return arccos value of this quaternion, arccos could be calculated as:
      * \f[\arccos(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arccosh(q)\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -771,9 +774,9 @@ public:
      * q.acos();
      * ```
      */
-    Quat<_Tp> acos() const;
+        Quat<_Tp> acos() const;
 
-    /**
+        /**
      * @brief return arctan value of quaternion q, arctan could be calculated as:
      * \f[\arctan(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arctanh(q\frac{\boldsymbol{v}}{||\boldsymbol{v}||})\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -785,10 +788,10 @@ public:
      * atan(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> atan(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> atan(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return arctan value of this quaternion, arctan could be calculated as:
      * \f[\arctan(q) = -\frac{\boldsymbol{v}}{||\boldsymbol{v}||}arctanh(q\frac{\boldsymbol{v}}{||\boldsymbol{v}||})\f]
      * where \f$\boldsymbol{v} = [x, y, z].\f$
@@ -799,9 +802,9 @@ public:
      * q.atan();
      * ```
      */
-    Quat<_Tp> atan() const;
+        Quat<_Tp> atan() const;
 
-    /**
+        /**
      * @brief return arcsinh value of quaternion q, arcsinh could be calculated as:
      * \f[arcsinh(q) = \ln(q + \sqrt{q^2 + 1})\f].
      * @param q a quaternion.
@@ -812,10 +815,10 @@ public:
      * asinh(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> asinh(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> asinh(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return arcsinh value of this quaternion, arcsinh could be calculated as:
      * \f[arcsinh(q) = \ln(q + \sqrt{q^2 + 1})\f].
      *
@@ -825,9 +828,9 @@ public:
      * q.asinh();
      * ```
      */
-    Quat<_Tp> asinh() const;
+        Quat<_Tp> asinh() const;
 
-    /**
+        /**
      * @brief return arccosh value of quaternion q, arccosh could be calculated as:
      * \f[arccosh(q) = \ln(q + \sqrt{q^2 - 1})\f].
      * @param q a quaternion.
@@ -838,10 +841,10 @@ public:
      * acosh(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> acosh(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> acosh(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return arccosh value of this quaternion, arccosh could be calculated as:
      * \f[arcosh(q) = \ln(q + \sqrt{q^2 - 1})\f].
      *
@@ -851,9 +854,9 @@ public:
      * q.acosh();
      * ```
      */
-    Quat<_Tp> acosh() const;
+        Quat<_Tp> acosh() const;
 
-    /**
+        /**
      * @brief return arctanh value of quaternion q, arctanh could be calculated as:
      * \f[arctanh(q) = \frac{\ln(q + 1) - \ln(1 - q)}{2}\f].
      * @param q a quaternion.
@@ -864,10 +867,10 @@ public:
      * atanh(q);
      * ```
      */
-    template <typename T>
-    friend Quat<T> atanh(const Quat<T> &q);
+        template <typename T>
+        friend Quat<T> atanh(const Quat<T> &q);
 
-    /**
+        /**
      * @brief return arctanh value of this quaternion, arctanh could be calculated as:
      * \f[arcsinh(q) = \frac{\ln(q + 1) - \ln(1 - q)}{2}\f].
      *
@@ -877,25 +880,25 @@ public:
      * q.atanh();
      * ```
      */
-    Quat<_Tp> atanh() const;
+        Quat<_Tp> atanh() const;
 
-    /**
+        /**
      * @brief return true if this quaternion is a unit quaternion.
      * @param eps tolerance scope of normalization. The eps could be defined as
      *
      * \f[eps = |1 - dotValue|\f] where \f[dotValue = (this.w^2 + this.x^2 + this,y^2 + this.z^2).\f]
      * And this function will consider it is normalized when the dotValue over a range \f$[1-eps, 1+eps]\f$.
      */
-    bool isNormal(_Tp eps=CV_QUAT_EPS) const;
+        bool isNormal(_Tp eps = CV_QUAT_EPS) const;
 
-    /**
+        /**
      * @brief to throw an error if this quaternion is not a unit quaternion.
      * @param eps tolerance scope of normalization.
      * @sa isNormal
      */
-    void assertNormal(_Tp eps=CV_QUAT_EPS) const;
+        void assertNormal(_Tp eps = CV_QUAT_EPS) const;
 
-    /**
+        /**
      * @brief transform a quaternion to a 3x3 rotation matrix.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and
      * this function will save some computations. Otherwise, this function will normalize this
@@ -927,9 +930,9 @@ public:
      * cout << new_point << endl;
      * ```
      */
-    Matx<_Tp, 3, 3> toRotMat3x3(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Matx<_Tp, 3, 3> toRotMat3x3(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief transform a quaternion to a 4x4 rotation matrix.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and
      * this function will save some computations. Otherwise, this function will normalize this
@@ -947,9 +950,9 @@ public:
      * @sa toRotMat3x3
      */
 
-    Matx<_Tp, 4, 4> toRotMat4x4(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Matx<_Tp, 4, 4> toRotMat4x4(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief transform the this quaternion to a Vec<T, 4>.
      *
      * For example
@@ -958,9 +961,9 @@ public:
      * q.toVec();
      * ```
      */
-    Vec<_Tp, 4> toVec() const;
+        Vec<_Tp, 4> toVec() const;
 
-    /**
+        /**
      * @brief transform this quaternion to a Rotation vector.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and
      * this function will save some computations.
@@ -977,9 +980,9 @@ public:
      * q.normalize().toRotVec(assumeUnit); //answer is same as q.toRotVec().
      * ```
      */
-    Vec<_Tp, 3> toRotVec(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Vec<_Tp, 3> toRotVec(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief get the angle of quaternion, it returns the rotation angle.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and
      * this function will save some computations.
@@ -995,9 +998,9 @@ public:
      * ```
      * @note It always return the value between \f$[0, 2\pi]\f$.
      */
-    _Tp getAngle(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        _Tp getAngle(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief get the axis of quaternion, it returns a vector of length 3.
      * @param assumeUnit if QUAT_ASSUME_UNIT, this quaternion assume to be a unit quaternion and
      * this function will save some computations.
@@ -1022,9 +1025,9 @@ public:
      * q.normalize().getAxis(assumeUnit);//same as q.getAxis()
      * ```
      */
-    Vec<_Tp, 3> getAxis(QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT) const;
+        Vec<_Tp, 3> getAxis(QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT) const;
 
-    /**
+        /**
      * @brief return the dot between quaternion \f$q\f$ and this quaternion.
      *
      * dot(p, q) is a good metric of how close the quaternions are.
@@ -1043,9 +1046,9 @@ public:
      * p.dot(q);
      * ```
      */
-    _Tp dot(Quat<_Tp> q) const;
+        _Tp dot(Quat<_Tp> q) const;
 
-    /**
+        /**
      * @brief To calculate the interpolation from \f$q_0\f$ to \f$q_1\f$ by Linear Interpolation(Nlerp)
      * For two quaternions, this interpolation curve can be displayed as:
      * \f[Lerp(q_0, q_1, t) = (1 - t)q_0 + tq_1.\f]
@@ -1057,9 +1060,9 @@ public:
      * @param t percent of vector \f$\overrightarrow{q_0q_1}\f$ over a range [0, 1].
      * @note it returns a non-unit quaternion.
      */
-    static Quat<_Tp> lerp(const Quat<_Tp> &q0, const Quat &q1, const _Tp t);
+        static Quat<_Tp> lerp(const Quat<_Tp> &q0, const Quat &q1, const _Tp t);
 
-    /**
+        /**
      * @brief To calculate the interpolation from \f$q_0\f$ to \f$q_1\f$ by Normalized Linear Interpolation(Nlerp).
      * it returns a normalized quaternion of Linear Interpolation(Lerp).
      * \f[ Nlerp(q_0, q_1, t) = \frac{(1 - t)q_0 + tq_1}{||(1 - t)q_0 + tq_1||}.\f]
@@ -1071,9 +1074,9 @@ public:
      quaternion will be normalized inside the function.
      * @sa lerp
      */
-    static Quat<_Tp> nlerp(const Quat<_Tp> &q0, const Quat &q1, const _Tp t, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+        static Quat<_Tp> nlerp(const Quat<_Tp> &q0, const Quat &q1, const _Tp t, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-    /**
+        /**
      @brief To calculate the interpolation between \f$q_0\f$ and \f$q_1\f$ by Spherical Linear
      Interpolation(Slerp), which can be defined as:
     \f[ Slerp(q_0, q_1, t) = \frac{\sin((1-t)\theta)}{\sin(\theta)}q_0 + \frac{\sin(t\theta)}{\sin(\theta)}q_1\f]
@@ -1089,9 +1092,9 @@ public:
     @note If the interpolation angle is small, the error between Nlerp and Slerp is not so large. To improve efficiency and
     avoid zero division error, we use Nlerp instead of Slerp.
     */
-    static Quat<_Tp> slerp(const Quat<_Tp> &q0, const Quat &q1, const _Tp t, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT, bool directChange=true);
+        static Quat<_Tp> slerp(const Quat<_Tp> &q0, const Quat &q1, const _Tp t, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT, bool directChange = true);
 
-    /**
+        /**
      * @brief To calculate the interpolation between \f$q_0\f$,\f$q_1\f$,\f$q_2\f$,\f$q_3\f$  by Spherical and quadrangle(Squad). This could be defined as:
      * \f[Squad(q_i, s_i, s_{i+1}, q_{i+1}, t) = Slerp(Slerp(q_i, q_{i+1}, t), Slerp(s_i, s_{i+1}, t), 2t(1-t))\f]
      * where
@@ -1111,12 +1114,12 @@ public:
      * @param directChange if QUAT_ASSUME_UNIT, squad will find the nearest path to interpolate.
      * @sa interPoint, spline
      */
-    static Quat<_Tp> squad(const Quat<_Tp> &q0, const Quat<_Tp> &s0,
-                            const Quat<_Tp> &s1, const Quat<_Tp> &q1,
-                            const _Tp t, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT,
-                            bool directChange=true);
+        static Quat<_Tp> squad(const Quat<_Tp> &q0, const Quat<_Tp> &s0,
+                               const Quat<_Tp> &s1, const Quat<_Tp> &q1,
+                               const _Tp t, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT,
+                               bool directChange = true);
 
-    /**
+        /**
      * @brief This is the part calculation of squad.
      * To calculate the intermedia quaternion \f$s_i\f$ between each three quaternion
      * \f[s_i = q_i\exp(-\frac{\log(q^*_iq_{i+1}) + \log(q^*_iq_{i-1})}{4}).\f]
@@ -1127,10 +1130,10 @@ public:
      * quaternions will be normalized inside the function.
      * @sa squad
      */
-    static Quat<_Tp> interPoint(const Quat<_Tp> &q0, const Quat<_Tp> &q1,
-                                 const Quat<_Tp> &q2, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+        static Quat<_Tp> interPoint(const Quat<_Tp> &q0, const Quat<_Tp> &q1,
+                                    const Quat<_Tp> &q2, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-    /**
+        /**
      * @brief to calculate a quaternion which is the result of a \f$C^1\f$ continuous
      * spline curve constructed by squad at the ratio t. Here, the interpolation values are
      * between \f$q_1\f$ and \f$q_2\f$. \f$q_0\f$ and \f$q_2\f$ are used to ensure the \f$C^1\f$
@@ -1157,11 +1160,11 @@ public:
      * ```
      * @sa squad, slerp
      */
-    static Quat<_Tp> spline(const Quat<_Tp> &q0, const Quat<_Tp> &q1,
-                            const Quat<_Tp> &q2, const Quat<_Tp> &q3,
-                            const _Tp t, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+        static Quat<_Tp> spline(const Quat<_Tp> &q0, const Quat<_Tp> &q1,
+                                const Quat<_Tp> &q2, const Quat<_Tp> &q3,
+                                const _Tp t, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-    /**
+        /**
      * @brief Return opposite quaternion \f$-p\f$
      * which satisfies \f$p + (-p) = 0.\f$
      *
@@ -1171,15 +1174,15 @@ public:
      * std::cout << -q << std::endl; // [-1, -2, -3, -4]
      * ```
      */
-    Quat<_Tp> operator-() const;
+        Quat<_Tp> operator-() const;
 
-    /**
+        /**
      * @brief return true if two quaternions p and q are nearly equal, i.e. when the absolute
      * value of each \f$p_i\f$ and \f$q_i\f$ is less than CV_QUAT_EPS.
      */
-    bool operator==(const Quat<_Tp>&) const;
+        bool operator==(const Quat<_Tp> &) const;
 
-    /**
+        /**
      * @brief Addition operator of two quaternions p and q.
      * It returns a new quaternion that each value is the sum of \f$p_i\f$ and \f$q_i\f$.
      *
@@ -1190,9 +1193,9 @@ public:
      * std::cout << p + q << std::endl; //[6, 8, 10, 12]
      * ```
      */
-    Quat<_Tp> operator+(const Quat<_Tp>&) const;
+        Quat<_Tp> operator+(const Quat<_Tp> &) const;
 
-    /**
+        /**
      * @brief Addition assignment operator of two quaternions p and q.
      * It adds right operand to the left operand and assign the result to left operand.
      *
@@ -1205,9 +1208,9 @@ public:
      *
      * ```
      */
-    Quat<_Tp>& operator+=(const Quat<_Tp>&);
+        Quat<_Tp> &operator+=(const Quat<_Tp> &);
 
-    /**
+        /**
      * @brief Subtraction operator of two quaternions p and q.
      * It returns a new quaternion that each value is the sum of \f$p_i\f$ and \f$-q_i\f$.
      *
@@ -1218,9 +1221,9 @@ public:
      * std::cout << p - q << std::endl; //[-4, -4, -4, -4]
      * ```
      */
-    Quat<_Tp> operator-(const Quat<_Tp>&) const;
+        Quat<_Tp> operator-(const Quat<_Tp> &) const;
 
-    /**
+        /**
      * @brief Subtraction assignment operator of two quaternions p and q.
      * It subtracts right operand from the left operand and assign the result to left operand.
      *
@@ -1233,9 +1236,9 @@ public:
      *
      * ```
      */
-    Quat<_Tp>& operator-=(const Quat<_Tp>&);
+        Quat<_Tp> &operator-=(const Quat<_Tp> &);
 
-    /**
+        /**
      * @brief Multiplication assignment operator of two quaternions q and p.
      * It multiplies right operand with the left operand and assign the result to left operand.
      *
@@ -1258,9 +1261,9 @@ public:
      * std::cout << p << std::endl; //[-60, 12, 30, 24]
      * ```
      */
-    Quat<_Tp>& operator*=(const Quat<_Tp>&);
+        Quat<_Tp> &operator*=(const Quat<_Tp> &);
 
-    /**
+        /**
      * @brief Multiplication assignment operator of a quaternions and a scalar.
      * It multiplies right operand with the left operand and assign the result to left operand.
      *
@@ -1283,9 +1286,9 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    Quat<_Tp>& operator*=(const _Tp s);
+        Quat<_Tp> &operator*=(const _Tp s);
 
-    /**
+        /**
      * @brief Multiplication operator of two quaternions q and p.
      * Multiplies values on either side of the operator.
      *
@@ -1307,9 +1310,9 @@ public:
      * std::cout << p * q << std::endl; //[-60, 12, 30, 24]
      * ```
      */
-    Quat<_Tp> operator*(const Quat<_Tp>&) const;
+        Quat<_Tp> operator*(const Quat<_Tp> &) const;
 
-    /**
+        /**
      * @brief Division operator of a quaternions and a scalar.
      * It divides left operand with the right operand and assign the result to left operand.
      *
@@ -1332,9 +1335,9 @@ public:
      * ```
      * @note the type of scalar should be equal to this quaternion.
      */
-    Quat<_Tp> operator/(const _Tp s) const;
+        Quat<_Tp> operator/(const _Tp s) const;
 
-    /**
+        /**
      * @brief Division operator of two quaternions p and q.
      * Divides left hand operand by right hand operand.
      *
@@ -1354,9 +1357,9 @@ public:
      * std::cout << p / q << std::endl; // equivalent to p * q.inv()
      * ```
      */
-    Quat<_Tp> operator/(const Quat<_Tp>&) const;
+        Quat<_Tp> operator/(const Quat<_Tp> &) const;
 
-    /**
+        /**
      * @brief Division assignment operator of a quaternions and a scalar.
      * It divides left operand with the right operand and assign the result to left operand.
      *
@@ -1379,9 +1382,9 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    Quat<_Tp>& operator/=(const _Tp s);
+        Quat<_Tp> &operator/=(const _Tp s);
 
-    /**
+        /**
      * @brief Division assignment operator of two quaternions p and q;
      * It divides left operand with the right operand and assign the result to left operand.
      *
@@ -1402,13 +1405,13 @@ public:
      * std::cout << p << std::endl;
      * ```
      */
-    Quat<_Tp>& operator/=(const Quat<_Tp>&);
+        Quat<_Tp> &operator/=(const Quat<_Tp> &);
 
-    _Tp& operator[](std::size_t n);
+        _Tp &operator[](std::size_t n);
 
-    const _Tp& operator[](std::size_t n) const;
+        const _Tp &operator[](std::size_t n) const;
 
-    /**
+        /**
      * @brief Subtraction operator of a scalar and a quaternions.
      * Subtracts right hand operand from left hand operand.
      *
@@ -1420,10 +1423,10 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    template <typename T>
-    friend Quat<T> cv::operator-(const T s, const Quat<T>&);
+        template <typename T>
+        friend Quat<T> cv::operator-(const T s, const Quat<T> &);
 
-    /**
+        /**
      * @brief Subtraction operator of a quaternions and a scalar.
      * Subtracts right hand operand from left hand operand.
      *
@@ -1435,10 +1438,10 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    template <typename T>
-    friend Quat<T> cv::operator-(const Quat<T>&, const T s);
+        template <typename T>
+        friend Quat<T> cv::operator-(const Quat<T> &, const T s);
 
-    /**
+        /**
      * @brief Addition operator of a quaternions and a scalar.
      * Adds right hand operand from left hand operand.
      *
@@ -1450,10 +1453,10 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    template <typename T>
-    friend Quat<T> cv::operator+(const T s, const Quat<T>&);
+        template <typename T>
+        friend Quat<T> cv::operator+(const T s, const Quat<T> &);
 
-    /**
+        /**
      * @brief Addition operator of a quaternions and a scalar.
      * Adds right hand operand from left hand operand.
      *
@@ -1465,10 +1468,10 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    template <typename T>
-    friend Quat<T> cv::operator+(const Quat<T>&, const T s);
+        template <typename T>
+        friend Quat<T> cv::operator+(const Quat<T> &, const T s);
 
-    /**
+        /**
      * @brief Multiplication operator of a scalar and a quaternions.
      * It multiplies right operand with the left operand and assign the result to left operand.
      *
@@ -1490,10 +1493,10 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    template <typename T>
-    friend Quat<T> cv::operator*(const T s, const Quat<T>&);
+        template <typename T>
+        friend Quat<T> cv::operator*(const T s, const Quat<T> &);
 
-    /**
+        /**
      * @brief Multiplication operator of a quaternion and a scalar.
      * It multiplies right operand with the left operand and assign the result to left operand.
      *
@@ -1515,178 +1518,170 @@ public:
      * ```
      * @note the type of scalar should be equal to the quaternion.
      */
-    template <typename T>
-    friend Quat<T> cv::operator*(const Quat<T>&, const T s);
+        template <typename T>
+        friend Quat<T> cv::operator*(const Quat<T> &, const T s);
 
-    template <typename S>
-    friend std::ostream& cv::operator<<(std::ostream&, const Quat<S>&);
+        template <typename S>
+        friend std::ostream &cv::operator<<(std::ostream &, const Quat<S> &);
 
-
-
-
-    /**
+        /**
      * @brief Transform a quaternion q to Euler angles.
      *
      *
      * When transforming a quaternion \f$q = w + x\boldsymbol{i} + y\boldsymbol{j} + z\boldsymbol{k}\f$ to Euler angles, rotation matrix M can be calculated by:
-     * \f[ \begin{aligned} {M} &={\begin{bmatrix}1-2(y^{2}+z^{2})&2(xy-zx)&2(xz+yw)\\2(xy+zw)&1-2(x^{2}+z^{2})&2(yz-xw)\\2(xz-yw)&2(yz+xw)&1-2(x^{2}+y^{2})\end{bmatrix}}\end{aligned}\f]
+     * \f[ \begin{aligned} {M} &={\begin{bmatrix}1-2(y^{2}+z^{2})&2(xy-zx)&2(xz+yw)\\2(xy+zw)&1-2(x^{2}+z^{2})&2(yz-xw)\\2(xz-yw)&2(yz+xw)&1-2(x^{2}+y^{2})\end{bmatrix}}\end{aligned}.\f]
      * On the other hand, the rotation matrix can be obtained from Euler angles.
      * Using intrinsic rotations with Euler angles type XYZ as an example,
      * \f$\theta_1 \f$, \f$\theta_2 \f$, \f$\theta_3 \f$ are three angles for Euler Angles, the rotation matrix R can be calculated by:\f[R =X(\theta_1)Y(\theta_2)Z(\theta_3))
      * R ={\begin{bmatrix}\cos\theta_{2}\cos\theta_{3}&-\cos\theta_{2}\sin\theta_{3}&\sin\theta_{2}\\\cos\theta_{1}\sin\theta_{3}+\cos\theta_{3}\sin\theta_{1}\sin\theta_{2}&\cos\theta_{1}\cos\theta_{3}-\sin\theta_{1}\sin\theta_{2}\sin\theta_{3}&-\cos\theta_{2}\sin\theta_{1}\\\sin\theta_{1}\sin\theta_{3}-\cos\theta_{1}\cos\theta_{3}\sin\theta_{2}&\cos\theta_{3}\sin\theta_{1}+\cos\theta_{1}\sin\theta_{2}\sin\theta_{3}&\cos\theta_{1}\cos_{2}\end{bmatrix}}\f]
-     * Rotation matrix M and R are equal in value. As long as \f$ s_{2} \neq 1 \f$, by comparing each element of two matrices ,the solution is\f$\begin{cases} \theta_1 = arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3 = arctan2(-m_{12},m_{11}) \end{cases}\f$
+     * Rotation matrix M and R are equal in value. As long as \f$ s_{2} \neq 1 \f$, by comparing each element of two matrices ,the solution is\f$\begin{cases} \theta_1 = \arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3 = \arctan2(-m_{12},m_{11}) \end{cases}\f$.
      *
      * When \f$ s_{2}=1\f$ or \f$ s_{2}=-1\f$, the gimbal lock occurs. The function will prompt "WARNING: Gimbal Lock will occur. Euler angles is non-unique. For intrinsic rotations, we set the third angle to zero, and for external rotation, we set the first angle to zero.".
      *
      * When \f$ s_{2}=1\f$ ,
      * The rotation matrix R is \f$R = {\begin{bmatrix}0&0&1\\\sin(\theta_1+\theta_3)&\cos(\theta_1+\theta_3)&0\\-\cos(\theta_1+\theta_3)&\sin(\theta_1+\theta_3)&0\end{bmatrix}}\f$.
      *
-     * The number of solutions is infinite with the condition \f$\begin{cases} \theta_1+\theta_3 = arctan2(m_{21},m_{22})\\ \theta_2=\pi/2 \end{cases}\ \f$.
+     * The number of solutions is infinite with the condition \f$\begin{cases} \theta_1+\theta_3 = \arctan2(m_{21},m_{22})\\ \theta_2=\pi/2 \end{cases}\ \f$.
      *
      * We set \f$ \theta_3 = 0\f$, the solution is \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$.
      *
      * When \f$ s_{2}=-1\f$,
      * The rotation matrix R is \f$X_{1}Y_{2}Z_{3}={\begin{bmatrix}0&0&-1\\-\sin(\theta_1-\theta_3)&\cos(\theta_1-\theta_3)&0\\\cos(\theta_1-\theta_3)&\sin(\theta_1-\theta_3)&0\end{bmatrix}}\f$.
      *
-     * The number of solutions is infinite with the condition \f$\begin{cases} \theta_1+\theta_3 = arctan2(m_{32},m_{22})\\ \theta_2=\pi/2 \end{cases}\ \f$.
+     * The number of solutions is infinite with the condition \f$\begin{cases} \theta_1+\theta_3 = \arctan2(m_{32},m_{22})\\ \theta_2=\pi/2 \end{cases}\ \f$.
      *
-     * We set \f$ \theta_3 = 0\f$, the solution is \f$ \begin{cases}\theta_1=arctan2(m_{32},m_{22}) \\ \theta_2=-\pi/2\\  \theta_3=0\end{cases}\f$.
+     * We set \f$ \theta_3 = 0\f$, the solution is \f$ \begin{cases}\theta_1=\arctan2(m_{32},m_{22}) \\ \theta_2=-\pi/2\\  \theta_3=0\end{cases}\f$.
      *
      * This function will normalize the quaternion at first and @ref QuatAssumeType is not needed. For \f$ sin \theta \f$ and \f$ cos \theta\f$ are in [-1,1], the unnormalized quaternion will cause computational troubles.
      *
-     * When the gimbal lock occurs, we set \f$\theta_3 = 0\f$ for intrinsic rotations or \f$\theta_1 = 0\f$ for extrinsic rotations
+     * When the gimbal lock occurs, we set \f$\theta_3 = 0\f$ for intrinsic rotations or \f$\theta_1 = 0\f$ for extrinsic rotations.
      *
      * As a result, for every Euler angles type, we can get solution as shown in the following table.
      * EulerAnglesType  | Ordinary | \f$\theta_2 = −π/2\f$ | \f$\theta_2 = π/2\f$
      * ------------- | -------------| -------------| -------------
-     * INT_XYZ|\f$\begin{cases} \theta_1 = arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3=arctan2(-m_{12},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{32},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
-     * INT_XZY|\f$\begin{cases} \theta_1 = arctan2(m_{32},m_{22})\\\theta_2 = -arcsin(m_{12}) \\\theta_3=arctan2(m_{13},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{31},m_{33})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{23},m_{33})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
-     * INT_YXZ|\f$\begin{cases} \theta_1 = arctan2(m_{31},m_{33})\\\theta_2 = -arcsin(m_{23}) \\\theta_3=arctan2(m_{21},m_{22}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
-     * INT_YZX|\f$\begin{cases} \theta_1 = arctan2(-m_{31},m_{11})\\\theta_2 = -arcsin(m_{21}) \\\theta_3=arctan2(-m_{23},m_{22}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{13},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{13},m_{12})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
-     * INT_ZXY|\f$\begin{cases} \theta_1 = arctan2(-m_{12},m_{22})\\\theta_2 = arcsin(m_{32}) \\\theta_3=arctan2(-m_{31},m_{33}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
-     * INT_ZYX|\f$\begin{cases} \theta_1 = arctan2(m_{21},m_{11})\\\theta_2 = arcsin(-m_{31}) \\\theta_3=arctan2(m_{32},m_{33}) \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \end{cases}\f$|\f$\begin{cases} \theta_1=\arctan2(-m_{12},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \end{cases}\f$
-     * EXT_XYZ|\f$\begin{cases} theta_1 = arctan2(m_{32},m_{33})\\\theta_2 = arcsin(-m_{31}) \\\ \theta_3 = arctan2(m_{21},m_{11})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{23},m_{22}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{22}) \end{cases}\f$
-     * EXT_XZY|\f$\begin{cases} \theta_1 =arctan2(-m_{23},m_{22})\\\theta_2 = -arcsin(m_{21}) \\\theta_3=  arctan2(-m_{31},m_{11})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(-m_{13},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{13},m_{12}) \end{cases}\f$
-     * EXT_YXZ|\f$\begin{cases} \theta_1 =arctan2(-m_{31},m_{33}) \\\theta_2 = arcsin(m_{32}) \\\theta_3= arctan2(-m_{12},m_{22})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$
-     * EXT_YZX|\f$\begin{cases} \theta_1 = arctan2(m_{13},m_{11})\\\theta_2 = -arcsin(m_{12}) \\\theta_3= arctan2(m_{32},m_{22})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{31},m_{33}) \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{23},m_{33}) \end{cases}\f$
-     * EXT_ZXY|\f$\begin{cases} \theta_1 = arctan2(m_{21},m_{22})\\\theta_2 = -arcsin(m_{23}) \\\theta_3= arctan2(m_{31},m_{33})\end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \end{cases}\f$|\f$\begin{cases} \theta_1= 0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \end{cases}\f$
-     * EXT_ZYX|\f$\begin{cases} \theta_1 = arctan2(-m_{12},m_{11})\\\theta_2 = arcsin(m_{13}) \\\theta_3= arctan2(-m_{23},m_{33})\end{cases}\f$|\f$\begin{cases} \theta_1=0,m_{22})\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21} \end{cases}\f$|\f$\begin{cases} \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{32},m_{22}) \end{cases}\f$
+     * INT_XYZ|\f$ \theta_1 = \arctan2(-m_{23},m_{33})\\\theta_2 = \arcsin(m_{13}) \\\theta_3= \arctan2(-m_{12},m_{11}) \f$|\f$ \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{32},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_XZY|\f$ \theta_1 = \arctan2(m_{32},m_{22})\\\theta_2 = -\arcsin(m_{12}) \\\theta_3= \arctan2(m_{13},m_{11}) \f$|\f$ \theta_1=\arctan2(m_{31},m_{33})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(-m_{23},m_{33})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_YXZ|\f$ \theta_1 = \arctan2(m_{31},m_{33})\\\theta_2 = -\arcsin(m_{23}) \\\theta_3= \arctan2(m_{21},m_{22}) \f$|\f$ \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_YZX|\f$ \theta_1 = \arctan2(-m_{31},m_{11})\\\theta_2 = -\arcsin(m_{21}) \\\theta_3= \arctan2(-m_{23},m_{22}) \f$|\f$ \theta_1=\arctan2(-m_{13},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{13},m_{12})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_ZXY|\f$ \theta_1 = \arctan2(-m_{12},m_{22})\\\theta_2 = \arcsin(m_{32}) \\\theta_3= \arctan2(-m_{31},m_{33}) \f$|\f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_ZYX|\f$ \theta_1 = \arctan2(m_{21},m_{11})\\\theta_2 = \arcsin(-m_{31}) \\\theta_3= \arctan2(m_{32},m_{33}) \f$|\f$ \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(-m_{12},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * EXT_XYZ|\f$ \theta_1 = \arctan2(m_{32},m_{33})\\\theta_2 = \arcsin(-m_{31}) \\\ \theta_3 = \arctan2(m_{21},m_{11})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{23},m_{22}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{22}) \f$
+     * EXT_XZY|\f$ \theta_1 = \arctan2(-m_{23},m_{22})\\\theta_2 = -\arcsin(m_{21}) \\\theta_3=  \arctan2(-m_{31},m_{11})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(-m_{13},m_{11}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{13},m_{12}) \f$
+     * EXT_YXZ|\f$ \theta_1 = \arctan2(-m_{31},m_{33}) \\\theta_2 = \arcsin(m_{32}) \\\theta_3= \arctan2(-m_{12},m_{22})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \f$
+     * EXT_YZX|\f$ \theta_1 = \arctan2(m_{13},m_{11})\\\theta_2 = -\arcsin(m_{12}) \\\theta_3= \arctan2(m_{32},m_{22})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{31},m_{33}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{23},m_{33}) \f$
+     * EXT_ZXY|\f$ \theta_1 = \arctan2(m_{21},m_{22})\\\theta_2 = -\arcsin(m_{23}) \\\theta_3= \arctan2(m_{31},m_{33})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \f$|\f$ \theta_1= 0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \f$
+     * EXT_ZYX|\f$ \theta_1 = \arctan2(-m_{12},m_{11})\\\theta_2 = \arcsin(m_{13}) \\\theta_3= \arctan2(-m_{23},m_{33})\f$|\f$ \theta_1=0,m_{22})\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21} \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{32},m_{22}) \f$
      *
      *  EulerAnglesType  | Ordinary | \f$\theta_2 = 0\f$ | \f$\theta_2 = π\f$
      * ------------- | -------------| -------------| -------------
-     * INT_XYX| \f$\begin{cases} \theta_1 = arctan2(m_{21},-m_{31})\\\theta_2 = arccos(m_{11}) \\\theta_3=arctan2(m_{12},m_{13}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
-     * INT_XZX| \f$\begin{cases} \theta_1 = arctan2(m_{31},m_{21})\\\theta_2 = arccos(m_{11}) \\\theta_3=arctan2(m_{13},-m_{12}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(-m_{32},m_{33})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
-     * INT_YXY| \f$\begin{cases} \theta_1 = arctan2(m_{12},m_{32})\\\theta_2 = arccos(m_{22}) \\\theta_3=arctan2(m_{21},-m_{23}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(-m_{31},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
-     * INT_YZY| \f$\begin{cases} \theta_1 = arctan2(m_{32},-m_{12})\\\theta_2 = arccos(m_{22}) \\\theta_3=arctan2(m_{23},m_{21}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{12},m_{11})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
-     * INT_ZXZ| \f$\begin{cases} \theta_1 = arctan2(-m_{13},m_{23})\\\theta_2 = arccos(m_{33}) \\\theta_3=arctan2(m_{31},m_{32}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
-     * INT_ZYZ| \f$\begin{cases} \theta_1 = arctan2(m_{23},m_{13})\\\theta_2 = arccos(m_{33}) \\\theta_3=arctan2(m_{32},-m_{31}) \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=0\\ \theta_3=0 \end{cases}\f$| \f$\begin{cases} \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \end{cases}\f$
-     * EXT_XYX|\f$\begin{cases} \theta_1 = arctan2(m_{12},m_{13}) \\\theta_2 = arccos(m_{11}) \\\theta_3= arctan2(m_{21},-m_{31})\end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3= \arctan2(m_{23},m_{22}) \end{cases}\f$
-     * EXT_XZX|\f$\begin{cases} \theta_1 = arctan2(m_{13},-m_{12})\\\theta_2 = arccos(m_{11}) \\\theta_3= arctan2(m_{31},m_{21})\end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{32},m_{33}) \end{cases}\f$
-     * EXT_YXY|\f$\begin{cases} \theta_1 =arctan2(m_{21},-m_{23})\\\theta_2 = arccos(m_{22}) \\\theta_3= arctan2(m_{12},m_{32}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{31},m_{11}) \end{cases}\f$
-     * EXT_YZY|\f$\begin{cases} \theta_1 =arctan2(m_{23},m_{21}) \\\theta_2 = arccos(m_{22}) \\\theta_3=arctan2(m_{32},-m_{12}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{12},m_{11}) \end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{13},m_{11}) \end{cases}\f$
-     * EXT_ZXZ|\f$\begin{cases} \theta_1 =arctan2(m_{31},m_{32}) \\\theta_2 = arccos(m_{33}) \\\theta_3= arctan2(-m_{13},m_{23})\end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{22}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$
-     * EXT_ZYZ|\f$\begin{cases} \theta_1 = arctan2(m_{32},-m_{31})\\\theta_2 = arccos(m_{33}) \\\theta_3=arctan2(m_{23},m_{13}) \end{cases}\f$| \f$\begin{cases} \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$| \f$\begin{cases} \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \end{cases}\f$
+     * INT_XYX| \f$ \theta_1 = \arctan2(m_{21},-m_{31})\\\theta_2 =\ arccos(m_{11}) \\\theta_3 = \arctan2(m_{12},m_{13}) \f$| \f$ \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_XZX| \f$ \theta_1 = \arctan2(m_{31},m_{21})\\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{13},-m_{12}) \f$| \f$ \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(-m_{32},m_{33})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_YXY| \f$ \theta_1 = \arctan2(m_{12},m_{32})\\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{21},-m_{23}) \f$| \f$ \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(-m_{31},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_YZY| \f$ \theta_1 = \arctan2(m_{32},-m_{12})\\\theta_2 = \arccos(m_{22}) \\\theta_3 =\arctan2(m_{23},m_{21}) \f$| \f$ \theta_1=\arctan2(m_{12},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_ZXZ| \f$ \theta_1 = \arctan2(-m_{13},m_{23})\\\theta_2 = \arccos(m_{33}) \\\theta_3 =\arctan2(m_{31},m_{32}) \f$| \f$ \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_ZYZ| \f$ \theta_1 = \arctan2(m_{23},m_{13})\\\theta_2 = \arccos(m_{33}) \\\theta_3 = \arctan2(m_{32},-m_{31}) \f$| \f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * EXT_XYX|\f$ \theta_1 = \arctan2(m_{12},m_{13}) \\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{21},-m_{31})\f$| \f$ \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3= \arctan2(m_{23},m_{22}) \f$
+     * EXT_XZX|\f$ \theta_1 = \arctan2(m_{13},-m_{12})\\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{31},m_{21})\f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{32},m_{33}) \f$
+     * EXT_YXY|\f$ \theta_1 = \arctan2(m_{21},-m_{23})\\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{12},m_{32}) \f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{31},m_{11}) \f$
+     * EXT_YZY|\f$ \theta_1 = \arctan2(m_{23},m_{21}) \\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{32},-m_{12}) \f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{12},m_{11}) \f$| \f$ \theta_1=0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{13},m_{11}) \f$
+     * EXT_ZXZ|\f$ \theta_1 = \arctan2(m_{31},m_{32}) \\\theta_2 = \arccos(m_{33}) \\\theta_3 = \arctan2(-m_{13},m_{23})\f$| \f$ \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{22}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \f$
+     * EXT_ZYZ|\f$ \theta_1 = \arctan2(m_{32},-m_{31})\\\theta_2 = \arccos(m_{33}) \\\theta_3 = \arctan2(m_{23},m_{13}) \f$| \f$ \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{11}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \f$
      *
      * @param eulerAnglesType the convertion Euler angles type
      */
 
-    Vec<_Tp, 3> toEulerAngles( EulerAnglesType eulerAnglesType);
+        Vec<_Tp, 3> toEulerAngles(EulerAnglesType eulerAnglesType);
 
-    _Tp w, x, y, z;
+        _Tp w, x, y, z;
 
-    /**
+        /**
      * @brief get a quatertion from a rotation about the Y-axis by \f$\theta\f$ .
      * \f[q = \cos(\theta/2)+0 i+ sin(\theta/2) j +0k \f]
      */
-    static Quat<_Tp> createFromYRot(_Tp theta);
-     /**
+        static Quat<_Tp> createFromYRot(_Tp theta);
+        /**
      * @brief get a quatertion from a rotation about the X-axis by \f$\theta\f$ .
      * \f[q = \cos(\theta/2)+sin(\theta/2) i +0 j +0 k \f]
      */
-    static Quat<_Tp> createFromXRot(_Tp theta);
-    /**
+        static Quat<_Tp> createFromXRot(_Tp theta);
+        /**
      * @brief get a quatertion from a rotation about the Z-axis by \f$\theta\f$.
      * \f[q = \cos(\theta/2)+0 i +0 j +sin(\theta/2) k \f]
      */
-    static Quat<_Tp> createFromZRot(_Tp theta);
+        static Quat<_Tp> createFromZRot(_Tp theta);
+    };
 
+    template <typename T>
+    Quat<T> inv(const Quat<T> &q, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
+    template <typename T>
+    Quat<T> sinh(const Quat<T> &q);
 
+    template <typename T>
+    Quat<T> cosh(const Quat<T> &q);
 
-};
+    template <typename T>
+    Quat<T> tanh(const Quat<T> &q);
 
-template <typename T>
-Quat<T> inv(const Quat<T> &q, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+    template <typename T>
+    Quat<T> sin(const Quat<T> &q);
 
-template <typename T>
-Quat<T> sinh(const Quat<T> &q);
+    template <typename T>
+    Quat<T> cos(const Quat<T> &q);
 
-template <typename T>
-Quat<T> cosh(const Quat<T> &q);
+    template <typename T>
+    Quat<T> tan(const Quat<T> &q);
 
-template <typename T>
-Quat<T> tanh(const Quat<T> &q);
+    template <typename T>
+    Quat<T> asinh(const Quat<T> &q);
 
-template <typename T>
-Quat<T> sin(const Quat<T> &q);
+    template <typename T>
+    Quat<T> acosh(const Quat<T> &q);
 
-template <typename T>
-Quat<T> cos(const Quat<T> &q);
+    template <typename T>
+    Quat<T> atanh(const Quat<T> &q);
 
-template <typename T>
-Quat<T> tan(const Quat<T> &q);
+    template <typename T>
+    Quat<T> asin(const Quat<T> &q);
 
-template <typename T>
-Quat<T> asinh(const Quat<T> &q);
+    template <typename T>
+    Quat<T> acos(const Quat<T> &q);
 
-template <typename T>
-Quat<T> acosh(const Quat<T> &q);
+    template <typename T>
+    Quat<T> atan(const Quat<T> &q);
 
-template <typename T>
-Quat<T> atanh(const Quat<T> &q);
+    template <typename T>
+    Quat<T> power(const Quat<T> &q, const Quat<T> &p, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-template <typename T>
-Quat<T> asin(const Quat<T> &q);
+    template <typename T>
+    Quat<T> exp(const Quat<T> &q);
 
-template <typename T>
-Quat<T> acos(const Quat<T> &q);
+    template <typename T>
+    Quat<T> log(const Quat<T> &q, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-template <typename T>
-Quat<T> atan(const Quat<T> &q);
+    template <typename T>
+    Quat<T> power(const Quat<T> &q, const T x, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-template <typename T>
-Quat<T> power(const Quat<T> &q, const Quat<T> &p, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+    template <typename T>
+    Quat<T> crossProduct(const Quat<T> &p, const Quat<T> &q);
 
-template <typename T>
-Quat<T> exp(const Quat<T> &q);
+    template <typename S>
+    Quat<S> sqrt(const Quat<S> &q, QuatAssumeType assumeUnit = QUAT_ASSUME_NOT_UNIT);
 
-template <typename T>
-Quat<T> log(const Quat<T> &q, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+    template <typename T>
+    Quat<T> operator*(const T, const Quat<T> &);
 
-template <typename T>
-Quat<T> power(const Quat<T>& q, const T x, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+    template <typename T>
+    Quat<T> operator*(const Quat<T> &, const T);
 
-template <typename T>
-Quat<T> crossProduct(const Quat<T> &p, const Quat<T> &q);
+    template <typename S>
+    std::ostream &operator<<(std::ostream &, const Quat<S> &);
 
-template <typename S>
-Quat<S> sqrt(const Quat<S> &q, QuatAssumeType assumeUnit=QUAT_ASSUME_NOT_UNIT);
+    using Quatd = Quat<double>;
+    using Quatf = Quat<float>;
 
-template <typename T>
-Quat<T> operator*(const T, const Quat<T>&);
-
-template <typename T>
-Quat<T> operator*(const Quat<T>&, const T);
-
-template <typename S>
-std::ostream& operator<<(std::ostream&, const Quat<S>&);
-
-
-using Quatd = Quat<double>;
-using Quatf = Quat<float>;
-
-//! @} core
-}
+    //! @} core
+} // namespace cv
 
 #include "opencv2/core/quaternion.inl.hpp"
 
