@@ -136,7 +136,7 @@ class Quat
 
 public:
   /** @brief Enum of Euler angles type.
- * 
+ *
  * Without considering the possibility of using two different convertions for the definition of the rotation axes ,
  * there exists twelve possible sequences of rotation axes, divided in two groups:
  * - Proper Euler angles (Z-X-Z, X-Y-X, Y-Z-Y, Z-Y-Z, X-Z-X, Y-X-Y)
@@ -273,17 +273,17 @@ public:
      * @brief get a quatertion from a rotation about the Y-axis by \f$\theta\f$ .
      * \f[q = \cos(\theta/2)+0 i+ sin(\theta/2) j +0k \f]
      */
-    static Quat<_Tp> createFromYRot(_Tp theta);
+    static Quat<_Tp> createFromYRot(const _Tp theta);
         /**
      * @brief get a quatertion from a rotation about the X-axis by \f$\theta\f$ .
      * \f[q = \cos(\theta/2)+sin(\theta/2) i +0 j +0 k \f]
      */
-    static Quat<_Tp> createFromXRot(_Tp theta);
+    static Quat<_Tp> createFromXRot(const _Tp theta);
         /**
      * @brief get a quatertion from a rotation about the Z-axis by \f$\theta\f$.
      * \f[q = \cos(\theta/2)+0 i +0 j +sin(\theta/2) k \f]
      */
-    static Quat<_Tp> createFromZRot(_Tp theta);
+    static Quat<_Tp> createFromZRot(const _Tp theta);
 
     /**
      * @brief a way to get element.

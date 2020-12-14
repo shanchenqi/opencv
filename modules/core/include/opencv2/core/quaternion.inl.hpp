@@ -867,20 +867,20 @@ Quat<T> Quat<T>::spline(const Quat<T> &q0, const Quat<T> &q1, const Quat<T> &q2,
 }
 
 template <typename T>
-Quat<T> Quat<T>::createFromYRot(T theta)
+Quat<T> Quat<T>::createFromYRot(const T theta)
 {
     Quat<T> q = { std::cos(theta), 0, std::sin(theta), 0};
     return q;
 }
 
 template <typename T>
-Quat<T> Quat<T>::createFromXRot(T theta){
+Quat<T> Quat<T>::createFromXRot(const T theta){
     Quat<T> q = { std::cos(theta), std::sin(theta), 0, 0};
     return q;
 }
 
 template <typename T>
-Quat<T> Quat<T>::createFromZRot(T theta){
+Quat<T> Quat<T>::createFromZRot(const T theta){
     Quat<T> q = { std::cos(theta), 0, 0, std::sin(theta)};
     return q;
 }
