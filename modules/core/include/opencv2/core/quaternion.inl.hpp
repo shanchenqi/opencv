@@ -869,18 +869,27 @@ Quat<T> Quat<T>::spline(const Quat<T> &q0, const Quat<T> &q1, const Quat<T> &q2,
 template <typename T>
 Quat<T> Quat<T>::createFromYRot(const T theta)
 {
+<<<<<<< HEAD
     Quat<T> q = { std::cos(theta), 0, std::sin(theta), 0};
     return q;
+=======
+    return Quat<T>{std::cos(theta), 0, std::sin(theta), 0};
+>>>>>>> liangqian/EulerAngle
 }
 
 template <typename T>
 Quat<T> Quat<T>::createFromXRot(const T theta){
+<<<<<<< HEAD
     Quat<T> q = { std::cos(theta), std::sin(theta), 0, 0};
     return q;
+=======
+    return Quat<T>{std::cos(theta), std::sin(theta), 0, 0};
+>>>>>>> liangqian/EulerAngle
 }
 
 template <typename T>
 Quat<T> Quat<T>::createFromZRot(const T theta){
+<<<<<<< HEAD
     Quat<T> q = { std::cos(theta), 0, 0, std::sin(theta)};
     return q;
 }
@@ -888,6 +897,13 @@ Quat<T> Quat<T>::createFromZRot(const T theta){
 
 template <typename T>
 Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> angles,EulerAnglesType eulerAnglesType) {
+=======
+    return Quat<T>{std::cos(theta), 0, 0, std::sin(theta)};
+}
+
+template <typename T>
+Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &angles,EulerAnglesType eulerAnglesType) {
+>>>>>>> liangqian/EulerAngle
     Quat<T> q;
     switch (eulerAnglesType)
     {
@@ -1098,7 +1114,11 @@ Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> angles,EulerAnglesType eu
 }
 
 template <typename T>
+<<<<<<< HEAD
 Vec<T, 3> Quat<T>::toEulerAngles( EulerAnglesType eulerAnglesType){
+=======
+Vec<T, 3> Quat<T>::toEulerAngles(EulerAnglesType eulerAnglesType){
+>>>>>>> liangqian/EulerAngle
     Matx33d R = toRotMat3x3();
     Vec<T, 3> angles;
 
