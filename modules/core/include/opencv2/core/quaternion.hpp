@@ -143,9 +143,9 @@ public:
      * - Proper Euler angles (Z-X-Z, X-Y-X, Y-Z-Y, Z-Y-Z, X-Z-X, Y-X-Y)
      * - Tait–Bryan angles (X-Y-Z, Y-Z-X, Z-X-Y, X-Z-Y, Z-Y-X, Y-X-Z).
      *
-     * The three elemental rotations may be [extrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_extrinsic_rotations)
+     * The three elemental rotations may be [extrinsic](https://en.wikipedia.org/wiki/Euler_angles#Conventions_by_extrinsic_rotations)
      * (rotations about the axes *xyz* of the original coordinate system, which is assumed to remain motionless),
-     * or [intrinsic](https://en.wikipedia.org/wiki/Euler_angles#Definition_by_intrinsic_rotations)(rotations about the axes of the rotating coordinate system *XYZ*, solidary with the moving body, which changes its orientation after each elemental rotation).
+     * or [intrinsic](https://en.wikipedia.org/wiki/Euler_angles#Conventions_by_intrinsic_rotations)(rotations about the axes of the rotating coordinate system *XYZ*, solidary with the moving body, which changes its orientation after each elemental rotation).
      *
      *
      * Extrinsic and intrinsic rotations are relevant.
@@ -164,8 +164,8 @@ public:
      * \f]
      *
      * The function is designed according to this set of conventions:
-     * - [Right handed](https://en.wikipedia.org/wiki/Right_hand_rule) reference frames are adopted, and the [right hand rule](https://en.wikipedia.org/wiki/Right_hand_rule) is used to determine the sign of angles.
-     * - Each matrix is meant to represent an [active rotation](https://en.wikipedia.org/wiki/Active_and_passive_transformation) (the composing and composed matrices
+     * - Right handed reference frames are adopted, and the [right hand rule](https://en.wikipedia.org/wiki/Right_hand_rule) is used to determine the sign of angles.
+     * - Each matrix is meant to represent an [active rotation](https://en.wikipedia.org/wiki/Active_and_passive_transformation#Active_transformation) (the composing and composed matrices
      * are supposed to act on the coordinates of vectors defined in the initial fixed reference frame and give as a result the coordinates of a rotated vector defined in the same reference frame).
      * - For \f$\theta_1\f$ and \f$\theta_3\f$, the valid range is (−π, π].
      *
@@ -1551,8 +1551,8 @@ public:
      * On the other hand, the rotation matrix can be obtained from Euler angles.
      * Using intrinsic rotations with Euler angles type XYZ as an example,
      * \f$\theta_1 \f$, \f$\theta_2 \f$, \f$\theta_3 \f$ are three angles for Euler angles, the rotation matrix R can be calculated by:\f[R =X(\theta_1)Y(\theta_2)Z(\theta_3)
-     * ={\begin{bmatrix}\cos\theta_{2}\cos\theta_{3}&-\cos\theta_{2}\sin\theta_{3}&\sin\theta_{2}\\\cos\theta_{1}\sin\theta_{3}+\cos\theta_{3}\sin\theta_{1}\sin\theta_{2}&\cos\theta_{1}\cos\theta_{3}-\sin\theta_{1}\sin\theta_{2}\sin\theta_{3}&-\cos\theta_{2}\sin\theta_{1}\\\sin\theta_{1}\sin\theta_{3}-\cos\theta_{1}\cos\theta_{3}\sin\theta_{2}&\cos\theta_{3}\sin\theta_{1}+\cos\theta_{1}\sin\theta_{2}\sin\theta_{3}&\cos\theta_{1}\cos_{2}\end{bmatrix}}\f]
-     * Rotation matrix M and R are equal. As long as \f$ s_{2} \neq 1 \f$, by comparing each element of two matrices ,the solution is\f$\begin{cases} \theta_1 = \arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3 = \arctan2(-m_{12},m_{11}) \end{cases}\f$.
+     * ={\begin{bmatrix}\cos\theta_{2}\cos\theta_{3}&-\cos\theta_{2}\sin\theta_{3}&\sin\theta_{2}\\\cos\theta_{1}\sin\theta_{3}+\cos\theta_{3}\sin\theta_{1}\sin\theta_{2}&\cos\theta_{1}\cos\theta_{3}-\sin\theta_{1}\sin\theta_{2}\sin\theta_{3}&-\cos\theta_{2}\sin\theta_{1}\\\sin\theta_{1}\sin\theta_{3}-\cos\theta_{1}\cos\theta_{3}\sin\theta_{2}&\cos\theta_{3}\sin\theta_{1}+\cos\theta_{1}\sin\theta_{2}\sin\theta_{3}&\cos\theta_{1}\cos\theta_{2}\end{bmatrix}}\f]
+     * Rotation matrix M and R are equal. As long as \f$ \sin\theta_{2} \neq 1 \f$, by comparing each element of two matrices ,the solution is\f$\begin{cases} \theta_1 = \arctan2(-m_{23},m_{33})\\\theta_2 = arcsin(m_{13}) \\\theta_3 = \arctan2(-m_{12},m_{11}) \end{cases}\f$.
      *
      * When \f$ s_{2}=1\f$ or \f$ s_{2}=-1\f$, the gimbal lock occurs. The function will prompt "WARNING: Gimbal Lock will occur. Euler angles is non-unique. For intrinsic rotations, we set the third angle to 0, and for external rotation, we set the first angle to 0.".
      *
@@ -1578,30 +1578,30 @@ public:
      * EulerAnglesType  | Ordinary | \f$\theta_2 = π/2\f$ | \f$\theta_2 = -π/2\f$
      * ------------- | -------------| -------------| -------------
      * INT_XYZ|\f$ \theta_1 = \arctan2(-m_{23},m_{33})\\\theta_2 = \arcsin(m_{13}) \\\theta_3= \arctan2(-m_{12},m_{11}) \f$|\f$ \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{32},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
-     * INT_XZY|\f$ \theta_1 = \arctan2(m_{32},m_{22})\\\theta_2 = -\arcsin(m_{12}) \\\theta_3= \arctan2(m_{13},m_{11}) \f$|\f$ \theta_1=\arctan2(m_{31},m_{33})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(-m_{23},m_{33})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
-     * INT_YXZ|\f$ \theta_1 = \arctan2(m_{13},m_{33})\\\theta_2 = -\arcsin(m_{23}) \\\theta_3= \arctan2(m_{21},m_{22}) \f$|\f$ \theta_1=\arctan2(m_{12},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(-m_{12},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_XZY|\f$ \theta_1 = \arctan2(m_{32},m_{22})\\\theta_2 = -\arcsin(m_{12}) \\\theta_3= \arctan2(m_{13},m_{11}) \f$|\f$ \theta_1=\arctan2(m_{31},m_{33})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{23},m_{21})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * INT_YXZ|\f$ \theta_1 = \arctan2(m_{13},m_{33})\\\theta_2 = -\arcsin(m_{23}) \\\theta_3= \arctan2(m_{21},m_{22}) \f$|\f$ \theta_1=\arctan2(m_{12},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{12},m_{31})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
      * INT_YZX|\f$ \theta_1 = \arctan2(-m_{31},m_{11})\\\theta_2 = \arcsin(m_{21}) \\\theta_3= \arctan2(-m_{23},m_{22}) \f$|\f$ \theta_1=\arctan2(m_{13},m_{33})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{13},m_{12})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
      * INT_ZXY|\f$ \theta_1 = \arctan2(-m_{12},m_{22})\\\theta_2 = \arcsin(m_{32}) \\\theta_3= \arctan2(-m_{31},m_{33}) \f$|\f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
-     * INT_ZYX|\f$ \theta_1 = \arctan2(m_{21},m_{11})\\\theta_2 = \arcsin(-m_{31}) \\\theta_3= \arctan2(m_{32},m_{33}) \f$|\f$ \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(-m_{12},m_{22})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
-     * EXT_XYZ|\f$ \theta_1 = \arctan2(m_{32},m_{33})\\\theta_2 = \arcsin(-m_{31}) \\\ \theta_3 = \arctan2(m_{21},m_{11})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{23},m_{22}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{22}) \f$
+     * INT_ZYX|\f$ \theta_1 = \arctan2(m_{21},m_{11})\\\theta_2 = \arcsin(-m_{31}) \\\theta_3= \arctan2(m_{32},m_{33}) \f$|\f$ \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi/2\\ \theta_3=0 \f$|\f$ \theta_1=\arctan2(m_{12},m_{13})\\ \theta_2=-\pi/2\\ \theta_3=0 \f$
+     * EXT_XYZ|\f$ \theta_1 = \arctan2(m_{32},m_{33})\\\theta_2 = \arcsin(-m_{31}) \\\ \theta_3 = \arctan2(m_{21},m_{11})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{23},m_{22}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{12},m_{13}) \f$
      * EXT_XZY|\f$ \theta_1 = \arctan2(-m_{23},m_{22})\\\theta_2 = \arcsin(m_{21}) \\\theta_3=  \arctan2(-m_{31},m_{11})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{13},m_{33}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{13},m_{12}) \f$
      * EXT_YXZ|\f$ \theta_1 = \arctan2(-m_{31},m_{33}) \\\theta_2 = \arcsin(m_{32}) \\\theta_3= \arctan2(-m_{12},m_{22})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{21},m_{11}) \f$
-     * EXT_YZX|\f$ \theta_1 = \arctan2(m_{13},m_{11})\\\theta_2 = -\arcsin(m_{12}) \\\theta_3= \arctan2(m_{32},m_{22})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{31},m_{33}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{23},m_{33}) \f$
-     * EXT_ZXY|\f$ \theta_1 = \arctan2(m_{21},m_{22})\\\theta_2 = -\arcsin(m_{23}) \\\theta_3= \arctan2(m_{13},m_{33})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{12},m_{11}) \f$|\f$ \theta_1= 0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(-m_{12},m_{11}) \f$
+     * EXT_YZX|\f$ \theta_1 = \arctan2(m_{13},m_{11})\\\theta_2 = -\arcsin(m_{12}) \\\theta_3= \arctan2(m_{32},m_{22})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{31},m_{33}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{23},m_{21}) \f$
+     * EXT_ZXY|\f$ \theta_1 = \arctan2(m_{21},m_{22})\\\theta_2 = -\arcsin(m_{23}) \\\theta_3= \arctan2(m_{13},m_{33})\f$|\f$ \theta_1= 0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{12},m_{11}) \f$|\f$ \theta_1= 0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{12},m_{32}) \f$
      * EXT_ZYX|\f$ \theta_1 = \arctan2(-m_{12},m_{11})\\\theta_2 = \arcsin(m_{13}) \\\theta_3= \arctan2(-m_{23},m_{33})\f$|\f$ \theta_1=0\\ \theta_2=\pi/2\\ \theta_3=\arctan2(m_{21},m_{22}) \f$|\f$ \theta_1=0\\ \theta_2=-\pi/2\\ \theta_3=\arctan2(m_{32},m_{22}) \f$
      *
      *  EulerAnglesType  | Ordinary | \f$\theta_2 = 0\f$ | \f$\theta_2 = π\f$
      * ------------- | -------------| -------------| -------------
      * INT_XYX| \f$ \theta_1 = \arctan2(m_{21},-m_{31})\\\theta_2 =\arccos(m_{11}) \\\theta_3 = \arctan2(m_{12},m_{13}) \f$| \f$ \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{23},m_{22})\\ \theta_2=\pi\\ \theta_3=0 \f$
-     * INT_XZX| \f$ \theta_1 = \arctan2(m_{31},m_{21})\\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{13},-m_{12}) \f$| \f$ \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(-m_{32},m_{33})\\ \theta_2=\pi\\ \theta_3=0 \f$
-     * INT_YXY| \f$ \theta_1 = \arctan2(m_{12},m_{32})\\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{21},-m_{23}) \f$| \f$ \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(-m_{31},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
-     * INT_YZY| \f$ \theta_1 = \arctan2(m_{32},-m_{12})\\\theta_2 = \arccos(m_{22}) \\\theta_3 =\arctan2(m_{23},m_{21}) \f$| \f$ \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{13},-m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_XZX| \f$ \theta_1 = \arctan2(m_{31},m_{21})\\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{13},-m_{12}) \f$| \f$ \theta_1=\arctan2(m_{32},m_{33})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{32},m_{22})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_YXY| \f$ \theta_1 = \arctan2(m_{12},m_{32})\\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{21},-m_{23}) \f$| \f$ \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{13},m_{33})\\ \theta_2=\pi\\ \theta_3=0 \f$
+     * INT_YZY| \f$ \theta_1 = \arctan2(m_{32},-m_{12})\\\theta_2 = \arccos(m_{22}) \\\theta_3 =\arctan2(m_{23},m_{21}) \f$| \f$ \theta_1=\arctan2(m_{13},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{13}, m_{33})\\ \theta_2=\pi\\ \theta_3=0 \f$
      * INT_ZXZ| \f$ \theta_1 = \arctan2(-m_{13},m_{23})\\\theta_2 = \arccos(m_{33}) \\\theta_3 =\arctan2(m_{31},m_{32}) \f$| \f$ \theta_1=\arctan2(m_{21},m_{22})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
      * INT_ZYZ| \f$ \theta_1 = \arctan2(m_{23},m_{13})\\\theta_2 = \arccos(m_{33}) \\\theta_3 = \arctan2(m_{32},-m_{31}) \f$| \f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=0\\ \theta_3=0 \f$| \f$ \theta_1=\arctan2(m_{21},m_{11})\\ \theta_2=\pi\\ \theta_3=0 \f$
      * EXT_XYX| \f$ \theta_1 = \arctan2(m_{12},m_{13}) \\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{21},-m_{31})\f$| \f$ \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3= \arctan2(m_{23},m_{22}) \f$
-     * EXT_XZX| \f$ \theta_1 = \arctan2(m_{13},-m_{12})\\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{31},m_{21})\f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{32},m_{33}) \f$
-     * EXT_YXY| \f$ \theta_1 = \arctan2(m_{21},-m_{23})\\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{12},m_{32}) \f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(-m_{31},m_{11}) \f$
-     * EXT_YZY| \f$ \theta_1 = \arctan2(m_{23},m_{21}) \\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{32},-m_{12}) \f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \f$| \f$ \theta_1=0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{13},-m_{11}) \f$
+     * EXT_XZX| \f$ \theta_1 = \arctan2(m_{13},-m_{12})\\\theta_2 = \arccos(m_{11}) \\\theta_3 = \arctan2(m_{31},m_{21})\f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{32},m_{33}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{32},m_{22}) \f$
+     * EXT_YXY| \f$ \theta_1 = \arctan2(m_{21},-m_{23})\\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{12},m_{32}) \f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{13},m_{33}) \f$
+     * EXT_YZY| \f$ \theta_1 = \arctan2(m_{23},m_{21}) \\\theta_2 = \arccos(m_{22}) \\\theta_3 = \arctan2(m_{32},-m_{12}) \f$| \f$ \theta_1= 0\\ \theta_2=0\\ \theta_3=\arctan2(m_{13},m_{11}) \f$| \f$ \theta_1=0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{13},m_{33}) \f$
      * EXT_ZXZ| \f$ \theta_1 = \arctan2(m_{31},m_{32}) \\\theta_2 = \arccos(m_{33}) \\\theta_3 = \arctan2(-m_{13},m_{23})\f$| \f$ \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{22}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \f$
      * EXT_ZYZ| \f$ \theta_1 = \arctan2(m_{32},-m_{31})\\\theta_2 = \arccos(m_{33}) \\\theta_3 = \arctan2(m_{23},m_{13}) \f$| \f$ \theta_1=0\\ \theta_2=0\\ \theta_3=\arctan2(m_{21},m_{11}) \f$| \f$ \theta_1= 0\\ \theta_2=\pi\\ \theta_3=\arctan2(m_{21},m_{11}) \f$
      *
