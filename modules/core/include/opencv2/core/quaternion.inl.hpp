@@ -948,110 +948,102 @@ Vec<T, 3> Quat<T>::toEulerAngles(EulerAnglesType eulerAnglesType){
     static_assert(EulerAnglesType::EULER_ANGLES_MAX_VALUE < 25, "Wrong Euler Angles type");
     Matx33d R = toRotMat3x3();
     Vec<T, 3> angles;
-    const T rotR[24][28] = {
-        // {R(0, 2), R(1, 0), R(1, 1), CV_PI * 0.5f, R(2, 1), R(1, 1), -CV_PI * 0.5f, -R(1, 2), R(2, 2), R(0, 2), -R(0, 1), R(0, 0), 0},//INT_XYZ
-        // {R(0, 1), R(1, 2), R(1, 0), -CV_PI * 0.5f, R(2, 0), R(2, 2), CV_PI * 0.5f, R(2, 1), R(1, 1), -R(0, 1), R(0, 2), R(0, 0), 0},//INT_XZY
-        // {R(1, 2), R(0, 1), R(2, 1), -CV_PI * 0.5f , R(0, 1), R(0, 0), CV_PI * 0.5f, R(0, 2), R(2, 2),-R(1, 2), R(1, 0), R(1, 1), 0}, //INT_YXZ
-        // {R(1, 0), R(0, 2), R(2, 2), CV_PI * 0.5f, R(0, 2), R(0, 1), -CV_PI * 0.5f, -R(2, 0), R(0, 0), R(1, 0), -R(1, 2), R(1, 1), 0}, //INT_YZX--
-        // {R(2, 1), R(1, 0), R(0, 0), CV_PI * 0.5f,R(1, 0), R(0, 0), -CV_PI * 0.5f, -R(0, 1), R(1, 1),R(2, 1),-R(2, 0), R(2, 2), 0},//INT_ZXY
-        // {R(2, 0), R(0, 1), R(0, 2), -CV_PI * 0.5f,R(1, 2), R(1, 1), CV_PI * 0.5f,R(1, 0), R(0, 0),-R(2, 0),R(2, 1), R(2, 2), 0},//INT_ZYX--
-        // {R(0, 0), R(2, 1), R(2, 2), 0, R(1, 2), R(1, 1), CV_PI, R(1, 0), -R(2, 0), R(0, 0), R(0, 1), R(0, 2), 0}, //INT_XYX
-        // {R(0, 0), R(2, 1), R(2, 2), 0, R(2, 1), R(1, 1), CV_PI, R(2, 0), R(1, 0), R(0, 0), R(0, 2), -R(0, 1), 0},//INT_XZX
-        // {R(1, 1), R(0, 2), R(0, 0), 0 ,R(0, 2), R(2, 2), CV_PI, R(0, 1), R(2, 1), R(1, 1), R(1, 0),-R(1, 2), 0},  //INT_YXY
-        // {R(1, 1), R(0, 2), R(0, 0), 0, R(0, 2), R(2, 2) ,CV_PI ,R(2, 1), -R(0, 1) ,R(1, 1) ,R(1, 2), R(1, 0), 0}, //INT_YZY
-        // {R(2, 2), R(1, 0), R(1, 1), 0, R(1, 0), R(0, 0), CV_PI, R(0, 2), -R(1, 2),R(2, 2), R(2, 0), R(2, 1), 0}, //INT_ZXZ
-        // {R(2, 2), R(1, 0), R(0, 0), 0, R(1, 0), R(0, 0), CV_PI, R(1, 2), R(0, 2),R(2, 2), R(2, 1), -R(2, 0), 0}, //INT_ZYZ
+    const T rotR[24][18] = {
+        {2, 3, 4, CV_PI * 0.5f,  7, 4, -CV_PI * 0.5f, -1, 5, 1,  8, 1, 2, -1, 1, 1, 0, 0},//INT_XYZ
+        {1, 5, 3, -CV_PI * 0.5f, 6, 8, CV_PI * 0.5f,   1, 7, 1,  4,-1, 1,  1, 2, 1, 0, 0},//INT_XZY
+        {5, 1, 7, -CV_PI * 0.5f, 1, 0, CV_PI * 0.5f,   1, 2, 1,  8,-1, 5,  1, 3, 1, 4, 0}, //INT_YXZ
+        {3, 2, 8, CV_PI * 0.5f,  2, 1, -CV_PI * 0.5f, -1, 6, 1,  0, 1, 3, -1, 5, 1, 4, 0}, //INT_YZX--
+        {7, 3, 0, CV_PI * 0.5f,  3, 0, -CV_PI * 0.5f, -1, 1, 1,  4, 1, 7, -1, 6, 1, 8, 0},//INT_ZXY
+        {6, 1, 2, -CV_PI * 0.5f, 5, 4, CV_PI * 0.5f,   1, 3, 1,  0,-1, 6,  1, 7, 1, 8, 0},//INT_ZYX--
+        {0, 7, 8, 0,             5, 4, CV_PI,          1, 3, -1, 6, 1, 0,  1, 1, 1, 2, 0}, //INT_XYX
+        {0, 7, 8, 0,             7, 4, CV_PI,          1, 6, 1,  3, 1, 0,  1, 2,-1, 1, 0},//INT_XZX
+        {4, 2, 0, 0 ,            2, 8, CV_PI,          1, 1, 1,  7, 1, 4,  1, 3,-1, 5, 0},  //INT_YXY
+        {4, 2, 0, 0,             2, 8, CV_PI ,         1, 7, -1, 1 ,1, 4,  1, 5, 1, 3, 0}, //INT_YZY
+        {8, 3, 4, 0,             3, 0, CV_PI,          1, 2, -1, 5, 1, 8,  1, 6, 1, 7, 0}, //INT_ZXZ
+        {8, 3, 0, 0,             3, 0, CV_PI,          1, 5, 1,  2, 1, 8,  1, 7,-1, 6, 0}, //INT_ZYZ
 
-        // {R(2, 0), -CV_PI * 0.5f, R(0, 1), R(0, 2), CV_PI * 0.5f, R(1, 2), R(1, 1), R(2, 1), R(2, 2), -R(2, 0), R(1, 0), R(0, 0), 1}, //EXT_XYZ
-        // {R(1, 0), CV_PI * 0.5f, R(0, 2), R(2, 2), -CV_PI * 0.5f, R(0, 2), R(0, 1), -R(1, 2), R(1, 1), R(1, 0), -R(2, 0), R(0, 0), 1}, //EXT_XZY
-        // {R(2, 1), CV_PI * 0.5f, R(1, 0), R(0, 0), -CV_PI * 0.5f, R(1, 0), R(0, 0), -R(2, 0), R(2, 2),R(2, 1), -R(0, 1), R(1, 1), 1}, //EXT_YXZcd
-        // {R(0, 1), -CV_PI * 0.5f, R(1, 2), R(1, 0), CV_PI * 0.5f, R(2, 0), R(2, 2), R(0, 2), R(0, 0),-R(0, 1), R(2, 1), R(1, 1), 1}, //EXT_YZX
-        // {R(1, 2), -CV_PI * 0.5f, R(0, 1), R(2, 1), CV_PI * 0.5f, R(0, 1), R(0, 0), R(1, 0), R(1, 1),-R(1, 2), R(0, 2), R(2, 2), 1}, //EXT_ZXY
-        // {R(0, 2), CV_PI * 0.5f, R(1, 0), R(1, 1), -CV_PI * 0.5f, R(2, 1), R(1, 1), -R(0, 1), R(0, 0),R(0, 2), -R(1, 2), R(2, 2), 1}, //EXT_ZYX
-        // {R(0, 0), 0, R(2, 1), R(2, 2), CV_PI, R(1, 2), R(1, 1),R(0, 1), R(0, 2), R(0, 0),R(1, 0), -R(2, 0), 1}, //EXT_XYX
-        // {R(0, 0), 0, R(2, 1), R(2, 2), CV_PI, R(2, 1), R(1, 1),R(0, 2), -R(0, 1), R(0, 0),R(2, 0), R(1, 0), 1}, //EXT_XZX
-        // {R(1, 1), 0, R(0, 2), R(0, 0), CV_PI, R(0, 2), R(2, 2),R(1, 0), -R(1, 2), R(1, 1),R(0, 1), R(2, 1), 1}, //EXT_YXY
-        // {R(1, 1), 0 ,R(0, 2), R(0, 0), CV_PI, R(0, 2), R(2, 2),R(1, 2), R(1, 0),R(1, 1), R(2, 1), -R(0, 1), 1}, //EXT_YZY
-        // {R(2, 2), 0, R(1, 0), R(1, 1), CV_PI, R(1, 0), R(0, 0),R(2, 0), R(2, 1), R(2, 2),R(0, 2), -R(1, 2), 1}, //EXT_ZXZ
-        // {R(2, 2), 0, R(1, 0), R(0, 0), CV_PI, R(1, 0), R(0, 0),R(2, 1), -R(2, 0), R(2, 2),R(1, 2), R(0, 2), 1} //EXT_ZYZ
-/////////0, 1, 2, 3, 4, 5, 6,             7, 8, 9, 10, 11,           12, 13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
-        {0, 2, 1, 0, 1, 1, CV_PI * 0.5f,  2, 1, 1, 1, -CV_PI * 0.5f, -1, 1, 2, 1, 2, 2, 1, 0, 2,-1, 0, 1, 1, 0, 0, 0},//INT_XYZ
-        {0, 1, 1, 2, 1, 0, -CV_PI * 0.5f, 2, 0, 2, 2, CV_PI * 0.5f,   1, 2, 1, 1, 1, 1,-1, 0, 1, 1, 0, 2, 1, 0, 0, 0},//INT_XZY
-        {1, 2, 0, 1, 2, 1, -CV_PI * 0.5f, 0, 1, 0, 0, CV_PI * 0.5f,   1, 0, 2, 1, 2, 2,-1, 1, 2, 1, 1, 0, 1, 1, 1, 0}, //INT_YXZ
-        {1, 0, 0, 2, 2, 2, CV_PI * 0.5f,  0, 2, 0, 1, -CV_PI * 0.5f, -1, 2, 0, 1, 0, 0, 1, 1, 0,-1, 1, 2, 1, 1, 1, 0}, //INT_YZX--
-        {2, 1, 1, 0, 0, 0, CV_PI * 0.5f,  1, 0, 0, 0, -CV_PI * 0.5f, -1, 0, 1, 1, 1, 1, 1, 2, 1,-1, 2, 0, 1, 2, 2, 0},//INT_ZXY
-        {2, 0, 0, 1, 0, 2, -CV_PI * 0.5f, 1, 2, 1, 1, CV_PI * 0.5f,   1, 1, 0, 1, 0, 0,-1, 2, 0, 1, 2, 1, 1, 2, 2, 0},//INT_ZYX--
-        {0, 0, 2, 1, 2, 2, 0,             1, 2, 1, 1, CV_PI,          1, 1, 0, -1,2, 0, 1, 0, 0, 1, 0, 1, 1, 0, 2, 0}, //INT_XYX
-        {0, 0, 2, 1, 2, 2, 0,             2, 1, 1, 1, CV_PI,          1, 2, 0, 1, 1, 0, 1, 0, 0, 1, 0, 2,-1, 0, 1, 0},//INT_XZX
-        {1, 1, 0, 2, 0, 0, 0 ,            0, 2, 2, 2, CV_PI,          1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0,-1, 1, 2, 0},  //INT_YXY
-        {1, 1, 0, 2, 0, 0, 0,             0, 2, 2, 2 ,CV_PI ,         1, 2, 1, -1,0, 1 ,1, 1, 1, 1, 1, 2, 1, 1, 0, 0}, //INT_YZY
-        {2, 2, 1, 0, 1, 1, 0,             1, 0, 0, 0, CV_PI,          1, 0, 2, -1,1, 2, 1, 2, 2, 1, 2, 0, 1, 2, 1, 0}, //INT_ZXZ
-        {2, 2, 1, 0, 0, 0, 0,             1, 0, 0, 0, CV_PI,          1, 1, 2, 1, 0, 2, 1, 2, 2, 1, 2, 1,-1, 2, 0, 0}, //INT_ZYZ
-
-        {2, 0, -CV_PI * 0.5f, 0, 1, 0, 2, CV_PI * 0.5f,  1, 2, 1, 1, 1, 2, 1, 1, 2, 2,-1, 2, 0, 1, 1, 0, 1, 0, 0, 1}, //EXT_XYZ
-        {1, 0, CV_PI * 0.5f,  0, 2, 2, 2, -CV_PI * 0.5f, 0, 2, 0, 1, -1,1, 2, 1, 1, 1, 1, 1, 0,-1, 2, 0, 1, 0, 0, 1}, //EXT_XZY
-        {2, 1, CV_PI * 0.5f,  1, 0, 0, 0, -CV_PI * 0.5f, 1, 0, 0, 0, -1,2, 0, 1, 2, 2, 1, 2, 1,-1, 0, 1, 1, 1, 1, 1}, //EXT_YXZcd
-        {0, 1, -CV_PI * 0.5f, 1, 2, 1, 0, CV_PI * 0.5f,  2, 0, 2, 2, 1, 0, 2, 1, 0, 0,-1, 0, 1, 1, 2, 1, 1, 1, 1, 1}, //EXT_YZX
-        {1, 2, -CV_PI * 0.5f, 0, 1, 2, 1, CV_PI * 0.5f,  0, 1, 0, 0, 1, 1, 0, 1, 1, 1,-1, 1, 2, 1, 0, 2, 1, 2, 2, 1}, //EXT_ZXY
-        {0, 2, CV_PI * 0.5f,  1, 0, 1, 1, -CV_PI * 0.5f, 2, 1, 1, 1, -1,0, 1, 1, 0, 0, 1, 0, 2,-1, 1, 2, 1, 2, 2, 1}, //EXT_ZYX
-        {0, 0, 0,             2, 1, 2, 2, CV_PI,         1, 2, 1, 1, 1, 0, 1, 1, 0, 2, 1, 0, 0, 1, 1, 0,-1, 2, 0, 1}, //EXT_XYX
-        {0, 0, 0,             2, 1, 2, 2, CV_PI,         2, 1, 1, 1, 1, 0, 2, -1,0, 1, 1, 0, 0, 1, 2, 0, 1, 1, 0, 1}, //EXT_XZX
-        {1, 1, 0,             0, 2, 0, 0, CV_PI,         0, 2, 2, 2, 1, 1, 0, -1,1, 2, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1}, //EXT_YXY
-        {1, 1, 0 ,            0, 2, 0, 0, CV_PI,         0, 2, 2, 2, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 2, 1,-1, 0, 1, 1}, //EXT_YZY
-        {2, 2, 0,             1, 0, 1, 1, CV_PI,         1, 0, 0, 0, 1, 2, 0, 1, 2, 1, 1, 2, 2, 1, 0, 2,-1, 1, 2, 1}, //EXT_ZXZ
-        {2, 2, 0,             1, 0, 0, 0, CV_PI,         1, 0, 0, 0, 1, 2, 1, -1,2, 0, 1, 2, 2, 1, 1, 2, 1, 0, 2, 1} //EXT_ZYZ
-
+        {6, -CV_PI * 0.5f, 1, 2, CV_PI * 0.5f,  5, 4, 1,  7, 1,  8,-1, 6, 1, 3, 1, 0, 1}, //EXT_XYZ
+        {3, CV_PI * 0.5f,  2, 8, -CV_PI * 0.5f, 2, 1, -1, 5, 1,  4, 1, 3,-1, 6, 1, 0, 1}, //EXT_XZY
+        {7, CV_PI * 0.5f,  3, 0, -CV_PI * 0.5f, 3, 0, -1, 6, 1,  8, 1, 7,-1, 1, 1, 4, 1}, //EXT_YXZcd
+        {1, -CV_PI * 0.5f, 5, 3, CV_PI * 0.5f,  6, 8, 1,  2, 1,  0,-1, 1, 1, 7, 1, 4, 1}, //EXT_YZX
+        {5, -CV_PI * 0.5f, 1, 7, CV_PI * 0.5f,  1, 0, 1,  3, 1,  4,-1, 5, 1, 2, 1, 8, 1}, //EXT_ZXY
+        {2, CV_PI * 0.5f,  3, 4, -CV_PI * 0.5f, 7, 4, -1, 1, 1,  0, 1, 2,-1, 5, 1, 8, 1}, //EXT_ZYX
+        {0, 0,             7, 6, CV_PI,         5, 4, 1,  1, 1,  2, 1, 0, 1, 3,-1, 6, 1}, //EXT_XYX
+        {0, 0,             7, 6, CV_PI,         7, 4, 1,  2, -1, 1, 1, 0, 1, 6, 1, 3, 1}, //EXT_XZX
+        {4, 0,             2, 0, CV_PI,         2, 8, 1,  3, -1, 5, 1, 4, 1, 1, 1, 7, 1}, //EXT_YXY
+        {4, 0 ,            2, 0, CV_PI,         2, 8, 1,  5, 1,  3, 1, 4, 1, 7,-1, 1, 1}, //EXT_YZY
+        {8, 0,             3, 4, CV_PI,         3, 0, 1,  6, 1,  7, 1, 8, 1, 2,-1, 5, 1}, //EXT_ZXZ
+        {8, 0,             3, 0, CV_PI,         3, 0, 1,  7, -1, 6, 1, 8, 1, 5, 1, 2, 1} //EXT_ZYZ
     };
-    if(!rotR[eulerAnglesType][27]){
-        if (abs(R(rotR[eulerAnglesType][0],rotR[eulerAnglesType][1]) - 1) < CV_QUAT_CONVERT_THRESHOLD)
+
+
+    double  *r = &R(0,0);
+    if(!rotR[eulerAnglesType][17])
+    {
+        double *r0 = r + (int)rotR[eulerAnglesType][0];
+        if (abs(*r0 - 1) < CV_QUAT_CONVERT_THRESHOLD)
+        {
+            T *r1 = r + (int)rotR[eulerAnglesType][1];
+            T *r2 = r + (int)rotR[eulerAnglesType][2];
+            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the third angle to 0");
+            return angles = {std::atan2(*r1, *r2), rotR[eulerAnglesType][3], 0};
+        }
+        else if(abs(*r0 + 1) < CV_QUAT_CONVERT_THRESHOLD)
         {
             CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the third angle to 0");
-            T sin_angle = R(rotR[eulerAnglesType][2],rotR[eulerAnglesType][3]);
-            T cos_angle = R(rotR[eulerAnglesType][4],rotR[eulerAnglesType][5]);
-            return angles = {std::atan2(sin_angle, cos_angle), rotR[eulerAnglesType][6], 0};
+            T *r4 = r + (int)rotR[eulerAnglesType][4];
+            T *r5 = r + (int)rotR[eulerAnglesType][5];
+            return angles = {std::atan2(*r4, *r5), rotR[eulerAnglesType][6], 0};
         }
-        else if(abs(R(rotR[eulerAnglesType][0],rotR[eulerAnglesType][1]) + 1) < CV_QUAT_CONVERT_THRESHOLD)
-        {
-            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the third angle to 0");
-            T sin_angle = R(rotR[eulerAnglesType][7],rotR[eulerAnglesType][8]);
-            T cos_angle = R(rotR[eulerAnglesType][9],rotR[eulerAnglesType][10]);
-            return angles = {std::atan2(sin_angle, cos_angle), rotR[eulerAnglesType][11], 0};
-        }
-        T sin_angle0 = rotR[eulerAnglesType][12] * R(rotR[eulerAnglesType][13],rotR[eulerAnglesType][14]);
-        T cos_angle0 = rotR[eulerAnglesType][15] * R(rotR[eulerAnglesType][16],rotR[eulerAnglesType][17]);
+        T *r8 = r +  (int)rotR[eulerAnglesType][8];
+        T *r10 = r + (int)rotR[eulerAnglesType][10];
+        T *r12 = r + (int)rotR[eulerAnglesType][12];
+
+        T sin_angle0 = (rotR[eulerAnglesType][7] * (*r8));
+        T cos_angle0 = (rotR[eulerAnglesType][9] * (*r10));
         angles(0) = std::atan2(sin_angle0, cos_angle0);
         if (eulerAnglesType/6 == 1 || eulerAnglesType/6 == 3)
-            angles(1) = std::acos(rotR[eulerAnglesType][18] * R(rotR[eulerAnglesType][19],rotR[eulerAnglesType][20]));
+            angles(1) = std::acos(rotR[eulerAnglesType][11] * (*r12));
         else
-            angles(1) = std::asin(rotR[eulerAnglesType][18] * R(rotR[eulerAnglesType][19],rotR[eulerAnglesType][20]));
-        T sin_angle2 = rotR[eulerAnglesType][21] * R(rotR[eulerAnglesType][22],rotR[eulerAnglesType][23]);
-        T cos_angle2 = rotR[eulerAnglesType][24] * R(rotR[eulerAnglesType][25],rotR[eulerAnglesType][26]);
+            angles(1) = std::asin(rotR[eulerAnglesType][11] * (*r12));
+        T *r14 = r + (int)rotR[eulerAnglesType][14];
+        T *r16 = r + (int)rotR[eulerAnglesType][16];
+        T sin_angle2 = (rotR[eulerAnglesType][13] * (*r14));
+        T cos_angle2 = (rotR[eulerAnglesType][15] * (*r16));
         angles(2) = std::atan2(sin_angle2, cos_angle2);
     }
-    else if(rotR[eulerAnglesType][27]){
-       if (abs(R(rotR[eulerAnglesType][0],rotR[eulerAnglesType][1]) - 1) < CV_QUAT_CONVERT_THRESHOLD)
+    else if(rotR[eulerAnglesType][17])
+    {
+        T *r0 = r + (int)rotR[eulerAnglesType][0];
+        if (abs( *r0 - 1) < CV_QUAT_CONVERT_THRESHOLD)
+        {
+            T *r2 = r + (int)rotR[eulerAnglesType][2];
+            T *r3 = r + (int)rotR[eulerAnglesType][3];
+            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the first angle to 0");
+            return angles = {0, rotR[eulerAnglesType][1], std::atan2(*r2, *r3)};
+        }
+        else if(abs(*r0 + 1) < CV_QUAT_CONVERT_THRESHOLD)
         {
             CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the first angle to 0");
-            T sin_angle = R(rotR[eulerAnglesType][2],rotR[eulerAnglesType][3]);
-            T cos_angle = R(rotR[eulerAnglesType][4],rotR[eulerAnglesType][5]);
-            return angles = {0,rotR[eulerAnglesType][6], std::atan2(sin_angle, cos_angle)};
+            T *r5 = r + (int)rotR[eulerAnglesType][5];
+            T *r6 = r + (int)rotR[eulerAnglesType][6];
+            return angles = {0, rotR[eulerAnglesType][4], std::atan2(*r5, *r6)};
         }
-        else if(abs(R(rotR[eulerAnglesType][0],rotR[eulerAnglesType][1]) + 1) < CV_QUAT_CONVERT_THRESHOLD)
-        {
-            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the first angle to 0");
-            T sin_angle = R(rotR[eulerAnglesType][7],rotR[eulerAnglesType][8]);
-            T cos_angle = R(rotR[eulerAnglesType][9],rotR[eulerAnglesType][10]);
-            return angles = {0, rotR[eulerAnglesType][11], std::atan2(sin_angle, cos_angle)};
-        }
-        T sin_angle0 = rotR[eulerAnglesType][12] * R(rotR[eulerAnglesType][13],rotR[eulerAnglesType][14]);
-        T cos_angle0 = rotR[eulerAnglesType][15] * R(rotR[eulerAnglesType][16],rotR[eulerAnglesType][17]);
+        T *r8 = r + (int)rotR[eulerAnglesType][8];
+        T *r10 = r + (int)rotR[eulerAnglesType][10];
+        T *r12 = r + (int)rotR[eulerAnglesType][12];
+
+        T sin_angle0 = (rotR[eulerAnglesType][7] * (*r8));
+        T cos_angle0 = (rotR[eulerAnglesType][9] * (*r10));
         angles(0) = std::atan2(sin_angle0, cos_angle0);
         if (eulerAnglesType/6 == 1 || eulerAnglesType/6 == 3)
-            angles(1) = std::acos(rotR[eulerAnglesType][18] * R(rotR[eulerAnglesType][19],rotR[eulerAnglesType][20]));
+            angles(1) = std::acos(rotR[eulerAnglesType][11] * (*r12));
         else
-            angles(1) = std::asin(rotR[eulerAnglesType][18] * R(rotR[eulerAnglesType][19],rotR[eulerAnglesType][20]));
-        T sin_angle2 = rotR[eulerAnglesType][21] * R(rotR[eulerAnglesType][22],rotR[eulerAnglesType][23]);
-        T cos_angle2 = rotR[eulerAnglesType][24] * R(rotR[eulerAnglesType][25],rotR[eulerAnglesType][26]);
+            angles(1) = std::asin(rotR[eulerAnglesType][11] * (*r12));
+        T *r14 = r + (int)rotR[eulerAnglesType][14];
+        T *r16 = r + (int)rotR[eulerAnglesType][16];
+        T sin_angle2 = (rotR[eulerAnglesType][13] * (*r14));
+        T cos_angle2 = (rotR[eulerAnglesType][15] * (*r16));
         angles(2) = std::atan2(sin_angle2, cos_angle2);
     }
     return angles;
