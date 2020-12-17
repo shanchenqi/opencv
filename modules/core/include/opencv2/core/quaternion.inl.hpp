@@ -865,7 +865,189 @@ Quat<T> Quat<T>::spline(const Quat<T> &q0, const Quat<T> &q1, const Quat<T> &q2,
     Quat<T> s2 = interPoint(vec[1], vec[2], vec[3], QUAT_ASSUME_UNIT);
     return squad(vec[1], s1, s2, vec[2], t, assumeUnit, QUAT_ASSUME_NOT_UNIT);
 }
+namespace
+{
+    template <typename T>
+    Quat<T> createFromAxisRot(int axis, const T theta)
+    {
+        if (axis == 0)
+            return Quat<T>::createFromXRot(theta);
+        if (axis == 1)
+            return Quat<T>::createFromYRot(theta);
+        if (axis == 2)
+            return Quat<T>::createFromZRot(theta);
+        CV_Assert(0);
+    }
+}
 
+template <typename T>
+Quat<T> Quat<T>::createFromYRot(const T theta)
+{
+    return Quat<T>{std::cos(theta * 0.5f), 0, std::sin(theta * 0.5f), 0};
+}
+
+template <typename T>
+Quat<T> Quat<T>::createFromXRot(const T theta){
+    return Quat<T>{std::cos(theta * 0.5f), std::sin(theta * 0.5f), 0, 0};
+}
+
+template <typename T>
+Quat<T> Quat<T>::createFromZRot(const T theta){
+    return Quat<T>{std::cos(theta * 0.5f), 0, 0, std::sin(theta * 0.5f)};
+}
+
+
+template <typename T>
+Quat<T> Quat<T>::createFromEulerAngles(const Vec<T, 3> &angles, EulerAnglesType eulerAnglesType) {
+    static_assert(EulerAnglesType::EULER_ANGLES_MAX_VALUE < 25, "Wrong Euler Angles type");
+    static const int rotationAxis[24][4] = {
+        {0, 1, 2, 0}, ///< Intrinsic rotations with the Euler angles type X-Y-Z
+        {0, 2, 1, 0}, ///< Intrinsic rotations with the Euler angles type X-Z-Y
+        {1, 0, 2, 0}, ///< Intrinsic rotations with the Euler angles type Y-X-Z
+        {1, 2, 0, 0}, ///< Intrinsic rotations with the Euler angles type Y-Z-X
+        {2, 0, 1, 0}, ///< Intrinsic rotations with the Euler angles type Z-X-Y
+        {2, 1, 0, 0}, ///< Intrinsic rotations with the Euler angles type Z-Y-X
+        {0, 1, 0, 0}, ///< Intrinsic rotations with the Euler angles type X-Y-X
+        {0, 2, 0, 0}, ///< Intrinsic rotations with the Euler angles type X-Z-X
+        {1, 0, 1, 0}, ///< Intrinsic rotations with the Euler angles type Y-X-Y
+        {1, 2, 1, 0}, ///< Intrinsic rotations with the Euler angles type Y-Z-Y
+        {2, 0, 2, 0}, ///< Intrinsic rotations with the Euler angles type Z-X-Z
+        {2, 1, 2, 0}, ///< Intrinsic rotations with the Euler angles type Z-Y-Z
+        {0, 1, 2, 1}, ///< Extrinsic rotations with the Euler angles type X-Y-Z
+        {0, 2, 1, 1}, ///< Extrinsic rotations with the Euler angles type X-Z-Y
+        {1, 0, 2, 1}, ///< Extrinsic rotations with the Euler angles type Y-X-Z
+        {1, 2, 0, 1}, ///< Extrinsic rotations with the Euler angles type Y-Z-X
+        {2, 0, 1, 1}, ///< Extrinsic rotations with the Euler angles type Z-X-Y
+        {2, 1, 0, 1}, ///< Extrinsic rotations with the Euler angles type Z-Y-X
+        {0, 1, 0, 1}, ///< Extrinsic rotations with the Euler angles type X-Y-X
+        {0, 2, 0, 1}, ///< Extrinsic rotations with the Euler angles type X-Z-X
+        {1, 0, 1, 1}, ///< Extrinsic rotations with the Euler angles type Y-X-Y
+        {1, 2, 1, 1}, ///< Extrinsic rotations with the Euler angles type Y-Z-Y
+        {2, 0, 2, 1}, ///< Extrinsic rotations with the Euler angles type Z-X-Z
+        {2, 1, 2, 1}  ///< Extrinsic rotations with the Euler angles type Z-Y-Z
+    };
+    if (!rotationAxis[eulerAnglesType][3]){
+
+        Quat<T> q1 = createFromAxisRot(rotationAxis[eulerAnglesType][0], angles(0));
+        Quat<T> q2 = createFromAxisRot(rotationAxis[eulerAnglesType][1], angles(1));
+        Quat<T> q3 = createFromAxisRot(rotationAxis[eulerAnglesType][2], angles(2));
+        return q1 * q2 * q3;
+    }
+    else if (rotationAxis[eulerAnglesType][3]){
+
+        Quat<T> q1 = createFromAxisRot(rotationAxis[eulerAnglesType][0], angles(0));
+        Quat<T> q2 = createFromAxisRot(rotationAxis[eulerAnglesType][1], angles(1));
+        Quat<T> q3 = createFromAxisRot(rotationAxis[eulerAnglesType][2], angles(2));
+        return q3 * q2 * q1;
+    }
+    CV_Assert(0);
+}
+
+template <typename T>
+Vec<T, 3> Quat<T>::toEulerAngles(EulerAnglesType eulerAnglesType){
+    static_assert(EulerAnglesType::EULER_ANGLES_MAX_VALUE < 25, "Wrong Euler Angles type");
+    Matx33d R = toRotMat3x3();
+    Vec<T, 3> angles;
+    const T rotR[24][18] = {
+        {2, 3, 4, CV_PI * 0.5f,  7, 4, -CV_PI * 0.5f, -1, 5, 1,  8, 1, 2, -1, 1, 1, 0, 0},//INT_XYZ
+        {1, 5, 3, -CV_PI * 0.5f, 6, 8, CV_PI * 0.5f,   1, 7, 1,  4,-1, 1,  1, 2, 1, 0, 0},//INT_XZY
+        {5, 1, 7, -CV_PI * 0.5f, 1, 0, CV_PI * 0.5f,   1, 2, 1,  8,-1, 5,  1, 3, 1, 4, 0}, //INT_YXZ
+        {3, 2, 8, CV_PI * 0.5f,  2, 1, -CV_PI * 0.5f, -1, 6, 1,  0, 1, 3, -1, 5, 1, 4, 0}, //INT_YZX--
+        {7, 3, 0, CV_PI * 0.5f,  3, 0, -CV_PI * 0.5f, -1, 1, 1,  4, 1, 7, -1, 6, 1, 8, 0},//INT_ZXY
+        {6, 1, 2, -CV_PI * 0.5f, 5, 4, CV_PI * 0.5f,   1, 3, 1,  0,-1, 6,  1, 7, 1, 8, 0},//INT_ZYX--
+        {0, 7, 8, 0,             5, 4, CV_PI,          1, 3, -1, 6, 1, 0,  1, 1, 1, 2, 0}, //INT_XYX
+        {0, 7, 8, 0,             7, 4, CV_PI,          1, 6, 1,  3, 1, 0,  1, 2,-1, 1, 0},//INT_XZX
+        {4, 2, 0, 0 ,            2, 8, CV_PI,          1, 1, 1,  7, 1, 4,  1, 3,-1, 5, 0},  //INT_YXY
+        {4, 2, 0, 0,             2, 8, CV_PI ,         1, 7, -1, 1 ,1, 4,  1, 5, 1, 3, 0}, //INT_YZY
+        {8, 3, 4, 0,             3, 0, CV_PI,          1, 2, -1, 5, 1, 8,  1, 6, 1, 7, 0}, //INT_ZXZ
+        {8, 3, 0, 0,             3, 0, CV_PI,          1, 5, 1,  2, 1, 8,  1, 7,-1, 6, 0}, //INT_ZYZ
+
+        {6, -CV_PI * 0.5f, 1, 2, CV_PI * 0.5f,  5, 4, 1,  7, 1,  8,-1, 6, 1, 3, 1, 0, 1}, //EXT_XYZ
+        {3, CV_PI * 0.5f,  2, 8, -CV_PI * 0.5f, 2, 1, -1, 5, 1,  4, 1, 3,-1, 6, 1, 0, 1}, //EXT_XZY
+        {7, CV_PI * 0.5f,  3, 0, -CV_PI * 0.5f, 3, 0, -1, 6, 1,  8, 1, 7,-1, 1, 1, 4, 1}, //EXT_YXZcd
+        {1, -CV_PI * 0.5f, 5, 3, CV_PI * 0.5f,  6, 8, 1,  2, 1,  0,-1, 1, 1, 7, 1, 4, 1}, //EXT_YZX
+        {5, -CV_PI * 0.5f, 1, 7, CV_PI * 0.5f,  1, 0, 1,  3, 1,  4,-1, 5, 1, 2, 1, 8, 1}, //EXT_ZXY
+        {2, CV_PI * 0.5f,  3, 4, -CV_PI * 0.5f, 7, 4, -1, 1, 1,  0, 1, 2,-1, 5, 1, 8, 1}, //EXT_ZYX
+        {0, 0,             7, 6, CV_PI,         5, 4, 1,  1, 1,  2, 1, 0, 1, 3,-1, 6, 1}, //EXT_XYX
+        {0, 0,             7, 6, CV_PI,         7, 4, 1,  2, -1, 1, 1, 0, 1, 6, 1, 3, 1}, //EXT_XZX
+        {4, 0,             2, 0, CV_PI,         2, 8, 1,  3, -1, 5, 1, 4, 1, 1, 1, 7, 1}, //EXT_YXY
+        {4, 0 ,            2, 0, CV_PI,         2, 8, 1,  5, 1,  3, 1, 4, 1, 7,-1, 1, 1}, //EXT_YZY
+        {8, 0,             3, 4, CV_PI,         3, 0, 1,  6, 1,  7, 1, 8, 1, 2,-1, 5, 1}, //EXT_ZXZ
+        {8, 0,             3, 0, CV_PI,         3, 0, 1,  7, -1, 6, 1, 8, 1, 5, 1, 2, 1} //EXT_ZYZ
+    };
+
+
+    double  *r = &R(0,0);
+    if(!rotR[eulerAnglesType][17])
+    {
+        double *r0 = r + (int)rotR[eulerAnglesType][0];
+        if (abs(*r0 - 1) < CV_QUAT_CONVERT_THRESHOLD)
+        {
+            T *r1 = r + (int)rotR[eulerAnglesType][1];
+            T *r2 = r + (int)rotR[eulerAnglesType][2];
+            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the third angle to 0");
+            return angles = {std::atan2(*r1, *r2), rotR[eulerAnglesType][3], 0};
+        }
+        else if(abs(*r0 + 1) < CV_QUAT_CONVERT_THRESHOLD)
+        {
+            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the third angle to 0");
+            T *r4 = r + (int)rotR[eulerAnglesType][4];
+            T *r5 = r + (int)rotR[eulerAnglesType][5];
+            return angles = {std::atan2(*r4, *r5), rotR[eulerAnglesType][6], 0};
+        }
+        T *r8 = r +  (int)rotR[eulerAnglesType][8];
+        T *r10 = r + (int)rotR[eulerAnglesType][10];
+        T *r12 = r + (int)rotR[eulerAnglesType][12];
+
+        T sin_angle0 = (rotR[eulerAnglesType][7] * (*r8));
+        T cos_angle0 = (rotR[eulerAnglesType][9] * (*r10));
+        angles(0) = std::atan2(sin_angle0, cos_angle0);
+        if (eulerAnglesType/6 == 1 || eulerAnglesType/6 == 3)
+            angles(1) = std::acos(rotR[eulerAnglesType][11] * (*r12));
+        else
+            angles(1) = std::asin(rotR[eulerAnglesType][11] * (*r12));
+        T *r14 = r + (int)rotR[eulerAnglesType][14];
+        T *r16 = r + (int)rotR[eulerAnglesType][16];
+        T sin_angle2 = (rotR[eulerAnglesType][13] * (*r14));
+        T cos_angle2 = (rotR[eulerAnglesType][15] * (*r16));
+        angles(2) = std::atan2(sin_angle2, cos_angle2);
+    }
+    else if(rotR[eulerAnglesType][17])
+    {
+        T *r0 = r + (int)rotR[eulerAnglesType][0];
+        if (abs( *r0 - 1) < CV_QUAT_CONVERT_THRESHOLD)
+        {
+            T *r2 = r + (int)rotR[eulerAnglesType][2];
+            T *r3 = r + (int)rotR[eulerAnglesType][3];
+            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the first angle to 0");
+            return angles = {0, rotR[eulerAnglesType][1], std::atan2(*r2, *r3)};
+        }
+        else if(abs(*r0 + 1) < CV_QUAT_CONVERT_THRESHOLD)
+        {
+            CV_LOG_WARNING(NULL,"Gimbal Lock occurs. Euler angles are non-unique, we set the first angle to 0");
+            T *r5 = r + (int)rotR[eulerAnglesType][5];
+            T *r6 = r + (int)rotR[eulerAnglesType][6];
+            return angles = {0, rotR[eulerAnglesType][4], std::atan2(*r5, *r6)};
+        }
+        T *r8 = r + (int)rotR[eulerAnglesType][8];
+        T *r10 = r + (int)rotR[eulerAnglesType][10];
+        T *r12 = r + (int)rotR[eulerAnglesType][12];
+
+        T sin_angle0 = (rotR[eulerAnglesType][7] * (*r8));
+        T cos_angle0 = (rotR[eulerAnglesType][9] * (*r10));
+        angles(0) = std::atan2(sin_angle0, cos_angle0);
+        if (eulerAnglesType/6 == 1 || eulerAnglesType/6 == 3)
+            angles(1) = std::acos(rotR[eulerAnglesType][11] * (*r12));
+        else
+            angles(1) = std::asin(rotR[eulerAnglesType][11] * (*r12));
+        T *r14 = r + (int)rotR[eulerAnglesType][14];
+        T *r16 = r + (int)rotR[eulerAnglesType][16];
+        T sin_angle2 = (rotR[eulerAnglesType][13] * (*r14));
+        T cos_angle2 = (rotR[eulerAnglesType][15] * (*r16));
+        angles(2) = std::atan2(sin_angle2, cos_angle2);
+    }
+    return angles;
+    }
 }  // namepsace
 //! @endcond
 
